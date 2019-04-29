@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+inst/doc
+
+# other folders
+other
+
+#vignette files
+vignettes/*.html
+vignettes/*.pdf
+
