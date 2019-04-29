@@ -35,8 +35,8 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
 
   # create plottingData folder to hold summary stats and plots withing scenarioType subfolders
   for (iType in 1:length(hcrTypes)) {
-    for (iRule in 1:dim(scenarioSpecies)[1]) {
-      plottingFolderName <- paste0(hcrTypes[iType],scenarioSpecies[iRule,1])
+    for (iRule in 1:dim(hcrLevels)[1]) {
+      plottingFolderName <- paste0(hcrTypes[iType],hcrLevels[iRule,1])
 
       # creates the folders inside the plotting data folder
       if (!dir.exists(paste0(rootFolder,"/plottingData/",plottingFolderName))) {
@@ -46,9 +46,9 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
       # creates individual folders for each exploitation/scenario combo
       for (iRate in 1:length(exploitationRates)) {
         if (exploitationRates[iRate] < 10) {
-          folderName <- paste0("Exploitation",hcrTypes[iType],scenarioSpecies[iRule,1],"0",exploitationRates[iRate])
+          folderName <- paste0("Exploitation",hcrTypes[iType],hcrLevels[iRule],"0",exploitationRates[iRate])
         } else {
-          folderName <- paste0("Exploitation",hcrTypes[iType],scenarioSpecies[iRule,1],exploitationRates[iRate])
+          folderName <- paste0("Exploitation",hcrTypes[iType],hcrLevels[iRule],exploitationRates[iRate])
         }
         if (!dir.exists(paste0(rootFolder,"/",folderName))) {
           dir.create(paste0(rootFolder,"/",folderName),recursive = TRUE)
