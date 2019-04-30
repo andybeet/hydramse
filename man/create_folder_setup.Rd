@@ -17,7 +17,9 @@ create_folder_setup(rootFolder, hcrTypes = c("Fixed", "Ramp"),
 \item{exploitationRates}{Numeric vector: Values for the maximum exploitation rate in any scenario.}
 }
 \value{
-Nothing is returned
+A Character matrix (3 columns):
+
+\item{folderStructure}{Column 1 = hcrType, Column 2 = hcrLevels, column 3 = exploitationRate}
 }
 \description{
 The folder structure is dependent on the number and type of scenarios selected. Within each scenario are subfolder to store model output
