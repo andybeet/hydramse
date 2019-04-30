@@ -8,8 +8,9 @@
 #'@param hcrLevels Character vector: Names for the levels that the harvest control rules are applied to. (Default = c("Complex","HTSpecies","LTSpecies"))
 #'@param exploitationRates Numeric vector: Values for the maximum exploitation rate in any scenario.
 #'
-#'@return Nothing is returned
+#'@return A Character matrix (3 columns):
 #'
+#'\item{folderStructure}{Column 1 = hcrType, Column 2 = hcrLevels, column 3 = exploitationRate}
 #'
 #'
 #'
@@ -22,7 +23,7 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
   if (!dir.exists(rootFolder)) {
     dir.create(rootFolder)
   } else {
-    stop(paste0("Root folder ",rootFolder, "already exists"))
+    stop(paste0("Root folder ",rootFolder, " already exists"))
   }
 
   # create kraken folder
@@ -32,7 +33,7 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
   if (!dir.exists(paste0(rootFolder,"/crashed/"))) {
     dir.create(paste0(rootFolder,"/crashed/"),recursive = TRUE)
   }
-
+  folderStructure <- NULL
   # create plottingData folder to hold summary stats and plots withing scenarioType subfolders
   for (iType in 1:length(hcrTypes)) {
     for (iRule in 1:length(hcrLevels)) {
@@ -42,13 +43,16 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
       if (!dir.exists(paste0(rootFolder,"/plottingData/",plottingFolderName))) {
         dir.create(paste0(rootFolder,"/plottingData/",plottingFolderName),recursive = TRUE)
       }
-
+      v <- c(hcrTypes[iType],hcrLevels[iRule])
       # creates individual folders for each exploitation/scenario combo
       for (iRate in 1:length(exploitationRates)) {
         if (exploitationRates[iRate] < 10) {
           folderName <- paste0("Exploitation",hcrTypes[iType],hcrLevels[iRule],"0",exploitationRates[iRate])
+          folderStructure <- rbind(folderStructure,c(v,paste0("0",exploitationRates[iRate])))
         } else {
           folderName <- paste0("Exploitation",hcrTypes[iType],hcrLevels[iRule],exploitationRates[iRate])
+          folderStructure <- rbind(folderStructure,c(v,exploitationRates[iRate]))
+
         }
         if (!dir.exists(paste0(rootFolder,"/",folderName))) {
           dir.create(paste0(rootFolder,"/",folderName),recursive = TRUE)
@@ -64,8 +68,9 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
       }
     }
   }
+  colnames(folderStructure) <- c("hcrType","hcrLevels","exploitationRate")
 
-
+  return(as.data.frame(folderStructure,stringsAsFactors=F))
 
 
 

@@ -6,6 +6,7 @@ inst/doc
 
 # other folders
 other
+*.txt
 
 #vignette files
 vignettes/*.html
