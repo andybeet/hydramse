@@ -7,7 +7,8 @@
 #'@param datPath Character string. The path to the dat file
 #'@param pinPath Character string. The path to the pin file
 #'
-#'@return Nothing is returned. Output is written to a file for processing
+#'@return Nothing is returned:
+#' Output is written to a file for processing
 #'
 #'
 #'

@@ -16,7 +16,8 @@ run_single_hydra(n = 1, exePath, datPath, pinPath)
 \item{pinPath}{Character string. The path to the pin file}
 }
 \value{
-Nothing is returned. Output is written to a file for processing
+Nothing is returned:
+Output is written to a file for processing
 }
 \description{
 Runs the Hydra code
