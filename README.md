@@ -1,5 +1,7 @@
 # hydramse
 
+STILL IN DEVELOPMENT
+
 Sets up the framework to perform an MSE using the operating model Hydra
 
 Commments/questions/bugs should be documented at [https://github.com/andybeet/issues](https://github.com/andybeet/hydramse/issues)
