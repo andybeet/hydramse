@@ -15,3 +15,10 @@ Nothing
 \description{
 Removes left over files from a failed run and temporary files created by ADMB
 }
+\section{Files Removed}{
+
+
+All files of type csv, txt, out, text are removed.
+Temporary files "variance", "fmin.log", "eigv.rpt"
+}
+

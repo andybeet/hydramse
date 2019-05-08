@@ -2,4 +2,7 @@
 
 export(cleanup_admb)
 export(create_folder_setup)
+export(file_to_Rlist)
+export(process_model_runs)
+export(process_single_scenario)
 export(run_single_hydra)
