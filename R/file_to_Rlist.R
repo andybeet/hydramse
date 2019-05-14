@@ -9,6 +9,7 @@
 #' \item{indices}{Each list item is an index from the model run where the name of the list item is the name of the index as specified in the outputfile}
 #'
 #'
+#'
 #' @export
 
 
@@ -18,12 +19,12 @@ file_to_Rlist = function(fn) {
 
   # tries to convert to double."Real" characters wont.
   # We want these since they are variable names
-  idx=sapply(as.double(ifile),is.na)
+  idx=suppressWarnings(sapply(as.double(ifile),is.na))
   vnam=ifile[idx] #list the variable names
   nv=length(vnam) #number of names
   A=list()
   ir=0
-  # loop through the list of varoable names and get the data associated with each
+  # loop through the list of variable names and get the data associated with each
   for(i in 1:nv)
   {
     ir=match(vnam[i],ifile)

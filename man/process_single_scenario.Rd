@@ -8,22 +8,42 @@ process_single_scenario(modelOutput, indices, revenueData,
   convertBiomassTolbs = 2204.62)
 }
 \arguments{
-\item{modelOutput}{List (length = nSims) content of files}
+\item{modelOutput}{List (length = nSims) content of files created by running Hydra}
 
 \item{indices}{Character vector. Names of the indices to process}
 
-\item{revenueData}{Data frame. External revenue data}
+\item{revenueData}{Data frame. External revenue data (names = character vector of species names, ppp = price ($) per pound)}
 
 \item{convertBiomassTolbs}{Numeric scalar. 1 metric tonne = 2204.62 lbs (default)}
 }
 \value{
 A list containing the following items:
-\item{species_bio}{biomass by species}
-\item{species_catch}{catch by species}
+\item{species_bio}{matrix (nYears x nSpecies) of median biomass (over nSims)}
+\item{species_catch}{matrix (nYears x nSpecies) of median catch (over nsims)}
+\item{guild_bio}{matrix (nYears n nGuilds) of median biomass by guild (over nsims)}
+\item{guild_catch}{matrix (nYears n nGuilds) of median catch by guild (over nsims)}
+\item{dfI}{data frame. Each column represents an index. Each row represent a year. see section below}
 }
 \description{
 A scenario is defined a a harvest control rule with a maximum exploitation rate.
-Each scenario is run a number of times. All of the runs for a scenario are processed for each index
-For biomass and catch indices at the species and the guild level the median is taken over all runs at each time point
-Fo othe indices, median at each time point is calculated.
+Each scenario is run a number of times (nSims). All of the runs for a scenario are processed.
+Specifics of processing are expalined in section below
 }
+\section{Processing specifics}{
+
+
+\code{species_bio}, \code{species_catch}, \code{guild_bio}, \code{guild_bio} are calculated from ("avByr","est_catch_biomass","est_survey_guild_biomass","est_catch_guild_biomass")
+by taking the median value over the nSims model runs.
+
+Each index in \code{indices} is processed and returned in \code{dfI}
+
+For indices that are not species specific (Diversity indices, Large fish indices) the median value over all nSims model runs are used at each time point
+
+For indices that are species dependent (avByr, est_catch_biomass). The median is calculated (over all nSims) for each species at each time point.
+The mean of the species medians are then used to represent the returned index value
+
+For indices that are species specific that involve status (species or guild status) the index is calculated as the total number of times a species (or guild) falls below the minimum threshold specified in the model
+
+Revenue is calculated from "est_catch_biomass". Biomass is converted to lbs. The median weight for each species in each year is multiplied by the price per pound (currently 2012 price)
+}
+
