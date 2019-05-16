@@ -11,4 +11,8 @@ RoxygenNote: 6.1.0
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
-Imports: parallel
+Imports: parallel,
+    stringr,
+    dplyr,
+    reshape2,
+    here

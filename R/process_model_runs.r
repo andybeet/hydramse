@@ -21,16 +21,6 @@
 
 process_model_runs <- function(data,indices,scenarios,exRateVec,rootFolder,outPutScenarioDirs,revenueData,outputType="indices"){
 
-  #speciesNames <- c("dogfish", "skate", "herring", "cod", "haddock", "ytail_fl", "wint_fl", "mackerel", "silverhake", "goosefish")
-  #guildNames  <- c("Piscivores","Planktivores","Benthivores","Elasmobranchs")
-  #scenarios <- c("FixedComplex","FixedHTSpecies","FixedLTSpecies","RampComplex","RampHTSpecies","RampLTSpecies")
-  #exRateVec <- c(5,10,15,20,25,30,35,40)
-  #indices <- c("index_LFI_Catch","index_LFI_Biomass","index_stdev_catch","avByr","est_catch_biomass","index_status_species","index_status_guild")
-  # find out how many directories
-  #dirs <- list.dirs(here::here(rootFolder),recursive=FALSE,full.names=FALSE)
-  #dirs <- dirs[grep("Exploitation",dirs)]
-
-
   speciesNames <- data$speciesList
   guildNames <- unique(data$guildNames)
   scenarioDirNames <- apply(as.matrix(outPutScenarioDirs),1,function(x) tail(unlist(strsplit(x,"/")),1))
@@ -73,12 +63,16 @@ process_model_runs <- function(data,indices,scenarios,exRateVec,rootFolder,outPu
     print((en-st)[3]/60)
   }
 
-  # save indices to RDS
-  saveRDS(dfI,file=here::here(rootFolder,"indices.rds"))
-  # save biomass and catch to plotting data folder
-  saveRDS(species_bio,file=here::here(rootFolder,"species_bio_rate.rds"))
-  saveRDS(species_catch,file=here::here(rootFolder,"species_catch_rate.rds"))
-  saveRDS(guild_bio,file=here::here(rootFolder,"guild_bio_rate.rds"))
-  saveRDS(guild_catch,file=here::here(rootFolder,"guild_catch_rate.rds"))
+  # converts to tidy data and saves
+  outputs <- data.frame(variableNames = c("dfI","species_bio","species_catch","guild_bio","guild_catch"),
+                        fileNames= c("indices.rds","species_bio_rate.rds","species_catch_rate.rds","guild_bio_rate.rds","guild_catch_rate.rds"))
+  for (iv in 1:dim(outputs)[1]) {
+    data <- get(outputs$variableNames[iv])
+    data <- reshape2::melt(data)
+    colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
+    data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)
+    data <- data %>% dplyr::mutate(Scenario=stringr::str_replace(Scenario,"Exploitation",""))
+    saveRDS(data,file=here::here(rootFolder,outputs$fileNames[iv]))
+  }
 
 }
