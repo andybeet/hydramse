@@ -5,7 +5,6 @@
 #'@param data List. The hydra dataList \code{hydradata::hydraDataList}
 #'@param indices Character vector. The names of the indices of interest from the model run.
 #'@param scenarios Character vector. The names of the scenario. Defined as a harvest control rul with a max exploitation rate
-#'@param exRateVec Numeric vector. Exploitation rates used in the MSE
 #'@param rootFolder root folder holding all run info
 #'@param outPutScenarioDirs list of scenario directories under the rootFolder
 #'@param revenueData Data frame (see \code{\link{process_single_scenario}})
@@ -19,17 +18,13 @@
 #'@export
 
 
-process_model_runs <- function(data,indices,scenarios,exRateVec,rootFolder,outPutScenarioDirs,revenueData,outputType="indices"){
+process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioDirs,revenueData,outputType="indices"){
 
   speciesNames <- data$speciesList
   guildNames <- unique(data$guildNames)
   scenarioDirNames <- apply(as.matrix(outPutScenarioDirs),1,function(x) tail(unlist(strsplit(x,"/")),1))
   yrNames <- as.character(1:data$Nyrs)
 
-  nRates <- length(exRateVec)
-  numScens <- nRates*length(scenarios)
-
-  scenarioNames <- character(length(numScens))
   nScenarios <- length(outPutScenarioDirs)
 
   for (iRun in 1:nScenarios) { # total number of scenarios ran
@@ -63,11 +58,12 @@ process_model_runs <- function(data,indices,scenarios,exRateVec,rootFolder,outPu
     print((en-st)[3]/60)
   }
 
-  # converts to tidy data and saves
+  # converts to tidy data and saves eventually pass these as argument
+
   outputs <- data.frame(variableNames = c("dfI","species_bio","species_catch","guild_bio","guild_catch"),
                         fileNames= c("indices.rds","species_bio_rate.rds","species_catch_rate.rds","guild_bio_rate.rds","guild_catch_rate.rds"))
   for (iv in 1:dim(outputs)[1]) {
-    data <- get(outputs$variableNames[iv])
+    data <- get(as.character(outputs$variableNames[iv]))
     data <- reshape2::melt(data)
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
     data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)

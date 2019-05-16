@@ -4,7 +4,7 @@
 \alias{process_model_runs}
 \title{Process model runs}
 \usage{
-process_model_runs(data, indices, scenarios, exRateVec, rootFolder,
+process_model_runs(data, indices, scenarios, rootFolder,
   outPutScenarioDirs, revenueData, outputType = "indices")
 }
 \arguments{
@@ -13,8 +13,6 @@ process_model_runs(data, indices, scenarios, exRateVec, rootFolder,
 \item{indices}{Character vector. The names of the indices of interest from the model run.}
 
 \item{scenarios}{Character vector. The names of the scenario. Defined as a harvest control rul with a max exploitation rate}
-
-\item{exRateVec}{Numeric vector. Exploitation rates used in the MSE}
 
 \item{rootFolder}{root folder holding all run info}
 

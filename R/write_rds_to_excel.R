@@ -7,18 +7,21 @@
 #'
 #'@return Excel files are created in folder \code{filePath}
 #'
-#'@importFrom xlsx write.xlsx
 #'@export
 
 
 write_rds_to_excel <- function(filePath,filenames) {
+
+  # split filename, read in , write out 3rd dimention to a a separate sheet in excel
   for (fname in filenames) {
     fn <- head(unlist(strsplit(fname,"\\.")),1)
     fileContents <- readRDS(paste0(filePath,"/",fname))
 
-    nobj <- dim(fileContents)[3]
-    for (isheet in 1:nobj) {
-      write.xlsx(fileContents[,,isheet],file=paste0(filePath,"/",fn,".xlsx"),sheetName=unlist(dimnames(fileContents)[3])[isheet],row.names=F,col.names=T,append=T)
+    objectNames <- as.character(unique(fileContents$Type))
+
+    for (isheet in 1:length(objectNames)) {
+      outData <- fileContents %>% dplyr::filter(Type == objectNames[isheet])
+      xlsx::write.xlsx(outData,file=paste0(filePath,"/",fn,".xlsx"),sheetName=objectNames[isheet],row.names=F,col.names=T,append=T)
     }
   }
 }

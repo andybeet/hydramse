@@ -4,7 +4,8 @@
 \alias{plot_box_whiskers}
 \title{creates box whisker plots}
 \usage{
-plot_box_whiskers(filePath, rootFolder, inputFile)
+plot_box_whiskers(filePath, rootFolder, inputFile, scaling = T,
+  outFilename = NULL)
 }
 \arguments{
 \item{filePath}{Character string. Path to rootfolder}
@@ -12,6 +13,10 @@ plot_box_whiskers(filePath, rootFolder, inputFile)
 \item{rootFolder}{Character string. Folder containing all runs output}
 
 \item{inputFile}{Character string. RDS file to process.}
+
+\item{scaling}{binary scalar. Scale to kilotons (T) or not (F)}
+
+\item{outFilename}{Character string. Name of file to be saved. Default = inputFile.png}
 }
 \value{
 Plots are written
