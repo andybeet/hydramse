@@ -1,0 +1,157 @@
+---
+title: "Darwinian Process - simulation methods"
+output:
+  html_document:
+    collapsed: yes
+    number_sections: no
+    smooth_scrol: yes
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+There are several components of the Hydra model that could be considered poorly understood. We need a framework set up to investigate the sensitivity of output to these components. This document outlines the components of the model that are considered most important and provides information regarding how they are being studied
+
+
+## Stock recruitment
+
+Many different functional forms for stock recruitment relationships were fit to data (eg. Shepherd, Segmented linear) using maximum likelihood estimation assuming a log normal distribution. The data are output from multispecies VPA models or from single species assessments (when multispecies data are not available). The resulting fits are considered "starting points" for the study. We simulate alternative parameterizations of these relationships based on several rules.
+
+1.  Each species in the model is classified, based on life history traits, as either having a stock recruitment relationship that displays overcompensation at high stock values or not. 
+1.  Each species classified as having an overcompensatory stock recruitment function is then assigned, at random, either a Ricker "type" (Shepherd SR function with shape parameter = 2) stock recruitment function or a segmented linear (displaying overcompensation) stock recruitment function.
+1.  Each species classified as having a compensatory stock recruitment function is assigned, at random, either a Beverton-Holt or hockey stick stock-recruitment function.
+1.  Alternative parameterization for these chosen functions are then simulated.
+
+Species in the model defined as displaying overcompensation are Spiny Dogfish, Winter skate, Cod, Goosefish, silver Hake
+
+
+### Shepherd recruitment model
+
+We use the Shepherd stock-recruitment function to represent Beverton Holt and ricker type models. Note that subscripts relating to time have been omitted for clarity.
+
+$$R = \frac{\alpha S}{ (1+(\frac{S}{\beta})^\gamma)}$$ 
+wherer $\alpha$ has dimensions of recruitment per unit spawner abundance and $\beta$ controls the level of density dependence. $\gamma$ is the shape parameters providing flexibility and generality in the shape of the function
+
+For $\gamma$ = 1 the Shepherd model reduces to the Beverton holt and with $\gamma$ = 2 it approximates the Ricker form
+
+We simulate alternative parameterizations ($\alpha_n$,$\beta_n$) of this model by randomly simulating new values of the fitted values $\hat\alpha$ and $\hat\beta$ that satisfly the following conditions:
+
+For the Beverton Holt model ($\gamma = 1$)
+
+1.  $\alpha_n$ is chosen to be in the interval [$c_1\hat\alpha$, $c_2\hat\alpha$]
+1.  $\beta_n$ is chosen to satisfy that the asymptote remains the same as the for the fitted model, $\alpha_n\beta_n = \hat\alpha\hat\beta$
+
+For the Ricker Type model ($\gamma = 2$)
+
+1.  $\alpha_n$ is chosen to be in the interval [$c_1\hat\alpha$, $c_2\hat\alpha$]
+1.  $\beta_n$ is chosen to ensure the new model reaches the same peak in recruitment (but at a different level of spawning stock biomass). $\beta_n$ is chosen to satisfy $\alpha_n\beta_n = \hat\alpha\hat\beta$
+
+$c_1$ and  $c_2$ are constants selected by the user to reflect the with of the interval.
+Current Values of $[c_1,c_2]$ are [0.2,5] for both Beverton Holt and Ricker Type models
+
+#### Proof
+
+To find maximum of curve (or asymptote): Proof of theory
+
+First find derivative
+
+$$\frac{d R}{d S} = U\frac{d V}{d S} + V\frac{d U}{d S}$$
+where $U = \alpha S$ and $V= \left(1+(\frac{S}{\beta})^\gamma\right)^{-1}$
+
+So $$\frac{d R}{d S} = -\alpha \gamma S S^{\gamma -1 } \frac{1}{\beta^{\gamma}}   \left(1+(\frac{S}{\beta})^\gamma\right)^{-2} + \alpha\left(1+(\frac{S}{\beta})^\gamma\right)^{-1}$$   
+
+
+$$\frac{d R}{d S} = \left[-\alpha \gamma  (\frac{S}{\beta})^\gamma + \alpha\left(1+(\frac{S}{\beta})^\gamma\right)\right] \left(1+(\frac{S}{\beta})^\gamma\right)^{-2} $$ 
+
+For a maximum $\frac{d R}{d S} =0$, therfore
+
+$$-\alpha \gamma  (\frac{S}{\beta})^\gamma + \alpha\left(1+(\frac{S}{\beta})^\gamma\right) = 0$$
+which can be rearranged
+
+$$ \alpha  = \alpha  \left(\frac{S}{\beta}\right)^\gamma (\gamma - 1)$$
+Which implies 
+
+$$  \left(\frac{S}{\beta}\right)^\gamma (\gamma - 1) = 1$$
+and therfore the value of SSB, $S_p$, at which maximum recruitment occurs is
+
+$$  S_p = \beta (\gamma - 1)^\frac{-1}{\gamma}$$
+and the corresponding value of recruitment is
+
+$$  R_p = \frac{\alpha\beta}{\gamma}(\gamma -1)^{\frac{\gamma-1}{\gamma}}$$
+Since simulated stock recruitment curves are constrained to have the same level of recruitment $R_{p}$ then $\alpha_n\beta_n = \hat\alpha\hat\beta$
+
+
+### Segmented linear recruitment Model
+
+As an alternative to the traditional stock recruitment functions we use a segmented linear model. Again the subscripts relating to time have been omitted.
+
+
+$$ \begin{aligned}
+R &= \alpha S && if \;S <= \delta\\
+&= \alpha S + \beta(S - \delta)  && if \;\; S > \delta
+\end{aligned}
+$$
+
+where $\alpha$ is the slope at origin (recruits/biomass), an estimate of density dependent survival. $\delta$ is the change-point, the value of spawning stock in which the slope, $\alpha$, changes. $\beta$ is the change in slope at the change-point. When $\beta = - \alpha$, this simplifies to the hockey stick model and resembles a simple piecewise linear alternative to the Beverton Holt model. When $\beta < - \alpha$, the slope declines after the change-point resembling a simple piecewise linear alternative to the Ricker model.
+
+We simulate alternative parameterizations ($\alpha_n$,$\beta_n$,$\delta_n$) of this model by randomly simulating new values of the fitted values $\hat\alpha$, $\hat\beta$ and $\hat\delta$that satisfly the following conditions:
+
+For Hockey stick model
+
+1.  $\delta_{n}$ is drawn from a uniform distribution in the interval $[k_1SS_{min},k_2\hat\delta]$
+where $k_1$ and $k_2$ are constants supplied by the user to reflect the width of the interval. $SS_{min}$ is the minimum observed spawning stock biomass for the given species. These Spawning stock biomass values are used in the original fitting of all models. $\hat\delta$ is the estimated value of the breakpoint when fitting the stock recruitment function to data
+1. $\alpha_{n} = \hat\alpha\hat\delta / \delta_{n}$. We assume that the value of Recruitment at which the breakpoint occurs remains the same. i.e. $\alpha_n \delta_n = \hat\alpha \hat\delta$
+1. $\beta_{n} = - \alpha_{n}$
+
+
+For the generalized overcompensatory form
+
+1. $\delta_{n}$ is drawn from a uniform distribution in the interval $[k_1 SS_{min},k_2\hat\delta]$
+1. $\alpha_{n} = \hat\alpha\hat\delta / \delta_{n}$
+1. $\beta_{n}$ is chosen such that the resulting model passes through the same point at the maximum observed spawning stock biomass as the fitted model. This point is $[SS_{max},\hat{SS_{max}}]$ and the slope from the new simulated point $[\delta_n, \alpha_n \delta_n$ is
+$$ slope = \frac{\hat{SS_{max}}-\alpha_n \delta_n}{SS_{max}-\delta_n}$$
+
+The one caveat is that it possible for fitted models to have an increasing slope following the breakpoint ($\hat\beta > -\hat\alpha$) implying non compensatory effects. If this arises we take the mirror image of the fit (using $\hat\beta$ = $-\hat\alpha$ as the mirror) and proceed as described above.
+
+Current Values of $[k_1,k_2]$ are [0.5,1.5]
+
+Note: Add figure showing segmented linear options
+
+
+## Other food
+
+Other food in the model is assumed to to take one of the following values 10000, 15000, 20000, ..., 60000 and is selected at random. 
+
+
+## Criteria to accept simulated parameter values
+
+The multispecies model, Hydra, is then run (in the absence of stock recruitment error) with each set of simulated parameter values. The model in run for 100 years in the absence of fishing pressure to ensure all species can coexist. From the resulting state of the system, the model is run a further 53 under historic fishing pressure.
+
+The output is then analysed to determin if these parameter values result in a multispecies fishery that reflect historically observed data.
+
+### Biomass evaluation
+
+The biomass of each species is examined at two time periods.
+
+Immediately preceeding the period of fishing. The average biomass is calculated over the last n years of the simulation during the period of no fishing. The average biomass, for all species, over this time period must exceed lower limits. These limits are defined, for each species, as the lowest observed spawning stock biomass from the spring and fall trawl surveys (since they began in 1968).
+
+
+The average biomass for each species is again calculated toward the end of the simulation. These values must also lie within limits. These limits are defined as a $[b_1 min(SS_{survey}),b_2 max(SS_{survey})]$ where the constants $b_1$ and $b_2$ are selected by the user.
+
+Current Values of $[b_1,b_2]$ are [0.5,2.0]
+
+The number of years used to calculate the average biomass is an option for the user. Currently this is set to 10 years.
+
+If both criteria are satisfied for all species then catch is assessed.
+
+### Catch evaluation
+
+Catch is assessed in the same way as biomass. The average catch at the end of the simulation must lie within limits defined as $[c_1 min(Landings),c_2 max(Landings)]$. Again the constants $c_1$ and $c_2$ are options for the user. Current they are [1,1]. If all three of these criteria are satisfied the parameter set simulated is considered acceptable. 
+
+
+

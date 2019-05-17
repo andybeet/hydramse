@@ -3,3 +3,5 @@
 ^data-raw$
 
 test_MSE.r
+
+^other$
