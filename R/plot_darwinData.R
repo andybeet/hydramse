@@ -3,11 +3,12 @@
 #'Uses parameter values found in lazy loaded data \code{darwinRules}. These models are considered starting points for simulation study
 #'FINISH LATER
 #'
+#'@param data List. lazy data \code{darwinData} is default
 #'
 #'@importFrom ggplot2 aes
 #'@export
 
-plot_darwinRules <- function(data=darwinRules){
+plot_darwinData <- function(data=darwinData){
   # create time series then make a tidy dataset for ggploting
   minSSB <- data$SSBBounds$min_obs_SS
   maxSSB <- data$SSBBounds$max_obs_SS

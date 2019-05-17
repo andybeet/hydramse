@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The lazily loaded data set `darwinRules` contains model parameter estimates of a variety of differnt stock recruitment. The underlying Stock-recruitment data was taken from a variety of different studies (multispecies studies where possible). The field "owner" indicates the source of the study and the "filename" is the name of the file containing the data. The other fields represnt the estimated model parameters. All parameters were estimated using maximum likelihood. The likelihood function are written below each section.
+The lazily loaded data set `darwinData` contains model parameter estimates of a variety of differnt stock recruitment. The underlying Stock-recruitment data was taken from a variety of different studies (multispecies studies where possible). The field "owner" indicates the source of the study and the "filename" is the name of the file containing the data. The other fields represnt the estimated model parameters. All parameters were estimated using maximum likelihood. The likelihood function are written below each section.
 
 ## Hockey Stick model
 
@@ -27,7 +27,7 @@ $$ likelihood $$
 
 
 ```{r hockey,echo=T}
-hydramse::darwinRules$hockey
+hydramse::darwinData$hockey
 ```
 ## Generalized version of hockey stick model (segmented)
 
@@ -39,7 +39,7 @@ with likelihood
 $$ likelihood $$
 
 ```{r segmented,echo=T}
-hydramse::darwinRules$segmented
+hydramse::darwinData$segmented
 ```
 
 ## Beverton Holt model (Shepherd model with gamma = 1)
@@ -53,7 +53,7 @@ with likelihood
 $$ likelihood $$
 
 ```{r BH,echo=T}
-hydramse::darwinRules$BH
+hydramse::darwinData$BH
 ```
 
 ## Ricker Type model (Shepherd model with gamma = 2)
@@ -67,7 +67,7 @@ with likelihood
 $$ likelihood $$
 
 ```{r Ricker,echo=T}
-hydramse::darwinRules$Ricker
+hydramse::darwinData$Ricker
 ```
 
 ## Spawning stock biomass (SSB) Bounds
@@ -75,12 +75,12 @@ hydramse::darwinRules$Ricker
 The fields "min_obs_SS" and "max_obs_SS" represent the  minimum and maximum observed spawning stock biomass values in each respective data set
 
 ```{r SSB,echo=T}
-hydramse::darwinRules$SSBBounds
+hydramse::darwinData$SSBBounds
 ```
 
 ## Historic Bounds for catch and survey
 
 This data is a summary of a larger dataset. Further explanation needed
 ```{r hist,echo=T}
-hydramse::darwinRules$historicBounds
+hydramse::darwinData$historicBounds
 ```

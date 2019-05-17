@@ -16,4 +16,4 @@
 #'@seealso To visualize this data please run \code{plot_sr}
 #'
 #'@source Parameter estimates for stock recuitment models were obtained by A. Beet. Estimates of Landings/catch ans survey bionass was compiled by C. Peretti
-"darwinRules"
+"darwinData"
