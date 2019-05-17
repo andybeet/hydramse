@@ -2,6 +2,7 @@
 
 export(cleanup_admb)
 export(create_folder_setup)
+export(darwin)
 export(file_to_Rlist)
 export(plot_box_whiskers)
 export(process_model_runs)

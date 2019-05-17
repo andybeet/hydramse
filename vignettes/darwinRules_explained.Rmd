@@ -1,0 +1,86 @@
+---
+title: "Lazy Data from darwinian study "
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The lazily loaded data set `darwinRules` contains model parameter estimates of a variety of differnt stock recruitment. The underlying Stock-recruitment data was taken from a variety of different studies (multispecies studies where possible). The field "owner" indicates the source of the study and the "filename" is the name of the file containing the data. The other fields represnt the estimated model parameters. All parameters were estimated using maximum likelihood. The likelihood function are written below each section.
+
+## Hockey Stick model
+
+The model takes the form
+
+$$model$$
+with likelihood
+
+$$ likelihood $$
+
+
+```{r hockey,echo=T}
+hydramse::darwinRules$hockey
+```
+## Generalized version of hockey stick model (segmented)
+
+The model takes the form
+
+$$model$$
+with likelihood
+
+$$ likelihood $$
+
+```{r segmented,echo=T}
+hydramse::darwinRules$segmented
+```
+
+## Beverton Holt model (Shepherd model with gamma = 1)
+
+
+The model takes the form
+
+$$model$$
+with likelihood
+
+$$ likelihood $$
+
+```{r BH,echo=T}
+hydramse::darwinRules$BH
+```
+
+## Ricker Type model (Shepherd model with gamma = 2)
+
+
+The model takes the form
+
+$$model$$
+with likelihood
+
+$$ likelihood $$
+
+```{r Ricker,echo=T}
+hydramse::darwinRules$Ricker
+```
+
+## Spawning stock biomass (SSB) Bounds
+
+The fields "min_obs_SS" and "max_obs_SS" represent the  minimum and maximum observed spawning stock biomass values in each respective data set
+
+```{r SSB,echo=T}
+hydramse::darwinRules$SSBBounds
+```
+
+## Historic Bounds for catch and survey
+
+This data is a summary of a larger dataset. Further explanation needed
+```{r hist,echo=T}
+hydramse::darwinRules$historicBounds
+```
