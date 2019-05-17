@@ -6,12 +6,12 @@
 \title{Data used to constrain Darwin model runs within historic bounds}
 \format{A list containing 6 elements
 \describe{
-  \item{hockey}{}
-  \item{segmented}{}
-  \item{BH}{}
-  \item{Ricker}{}
-  \item{SSBBounds}{Matrix. }
-  \item{historicBounds}{Numeric Vector (Nthresholds): The values of exploitation at each threshold (Only used in step function Ramp). This is set in \code{\link{create_datpin_files}}. See \code{flagLinearRamp}}
+  \item{hockey}{Data frame. Parameter estimates from hockey stick model}
+  \item{segmented}{Data frame. Parameter estimates from the generalized hockey stick model}
+  \item{BH}{Data frame. Parameter estimates from Beverton Holt model (Shepherd model with shape parameter = 1)}
+  \item{Ricker}{Data frame. Parameter estimates from Ricker (type) model (Shepherd model with shape parameter = 2)}
+  \item{SSBBounds}{Data frame. min and max "observed" SSB for each species}
+  \item{historicBounds}{Data frame. min and max "observed" landings and survey data for each species}
 }}
 \source{
 Parameter estimates for stock recuitment models were obtained by A. Beet. Estimates of Landings/catch ans survey bionass was compiled by C. Peretti
