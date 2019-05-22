@@ -4,10 +4,15 @@
 \alias{simulate_parameters}
 \title{simulate all unknowns in the MSE}
 \usage{
-simulate_parameters(stockRecruitParams, simulationRules)
+simulate_parameters(stockRecruitParams = darwinData,
+  simulationRules = darwinRules, SRFunctionChoice = NULL)
 }
 \arguments{
-\item{simulationRules}{These have been lazily loaded as darwinRules}
+\item{stockRecruitParams}{Data set similar to lazily loaded darwinData dataset}
+
+\item{simulationRules}{Set of rules set up similar to lazily loaded darwinRules dataset}
+
+\item{SRFunctionChoice}{Numeric Vector. Whether the Stock recruitment function for each species should be piecewise model (hockey, generalized,=  0) or shepherd (1) or a random choice of either (Default = NULL)}
 }
 \value{
 List
@@ -15,18 +20,21 @@ List
 \item{alphaShepherd}{simulated value of alpha for the shepherd model  }
 \item{betaShepherd}{simulated value of beta for the shepherd model}
 \item{shapeShepherd}{value of the shape parameter. Predefined by user in darwinRules$SRType}
-\item{alphaHockey}{}
-\item{betaHockey}{}
-\item{shapeHockey}{}
-\item{alphaSegmented}{}
-\item{alphaSegmented}{}
-\item{alphaSegmented}{}
+\item{alphaHockey}{simulated value of alpha (slope) for the hockey stick model}
+\item{betaHockey}{simulated value of beta (-alpha) for the hockey stick model}
+\item{shapeHockey}{simulated value of the breakpoint for the hockey stick model}
+\item{alphaSegmented}{simulated value of alpha (slope) for the generalized segmented model}
+\item{betaSegmented}{simulated value of beta (change in the slope) for the generalized segmented model}
+\item{shapeSegmented}{simulated value of breakpoint for the generalized segmented model}
+\item{recSigma}{Values of sigma to be used in Hydra for each species/stock recruitment function chosen}
+\item{recType}{Denotes the form of the SR model used in Hydra. see field \code{recType} in \code{hydradata::hydraDataList} }
 }
 \description{
 Currently only simulate stock recruitment parameters and other food. See Method section below for more details
 }
 \section{Method}{
 
-Methods are described in the vignette \code{simulation_documentation}
+Methods and \code{darwinRules} dataset are described in the vignette \code{simulation_documentation}
+The data set \code{darwinData} is defined in \code{?darwinData} and explained futher in the vignette \code{darwinData_explained}
 }
 
