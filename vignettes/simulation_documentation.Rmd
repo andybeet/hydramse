@@ -24,10 +24,16 @@ Many different functional forms for stock recruitment relationships were fit to 
 
 1.  Each species in the model is classified, based on life history traits, as either having a stock recruitment relationship that displays overcompensation at high stock values or not. 
 1.  Each species classified as having an overcompensatory stock recruitment function is then assigned, at random, either a Ricker "type" (Shepherd SR function with shape parameter = 2) stock recruitment function or a segmented linear (displaying overcompensation) stock recruitment function.
-1.  Each species classified as having a compensatory stock recruitment function is assigned, at random, either a Beverton-Holt or hockey stick stock-recruitment function.
+1.  Each species classified as having a compensatory stock recruitment function is assigned, at random, either a Beverton-Holt (Shepherd SR function with shape parameter = 1) or hockey stick stock-recruitment function.
 1.  Alternative parameterization for these chosen functions are then simulated.
 
 Species in the model defined as displaying overcompensation are Spiny Dogfish, Winter skate, Cod, Goosefish, silver Hake
+
+```{r comp, echo=TRUE}
+hydramse::darwinData$hockey$species
+hydramse::darwinRules$SRType
+```
+
 
 
 ### Shepherd recruitment model
@@ -52,7 +58,12 @@ For the Ricker Type model ($\gamma = 2$)
 1.  $\beta_n$ is chosen to ensure the new model reaches the same peak in recruitment (but at a different level of spawning stock biomass). $\beta_n$ is chosen to satisfy $\alpha_n\beta_n = \hat\alpha\hat\beta$
 
 $c_1$ and  $c_2$ are constants selected by the user to reflect the with of the interval.
-Current Values of $[c_1,c_2]$ are [0.2,5] for both Beverton Holt and Ricker Type models
+Current Values of $[c_1,c_2]$ are:
+
+```{r alph, echo=TRUE}
+hydramse::darwinRules$RickerRangeOfAlphas
+```
+ for both Beverton Holt and Ricker Type models
 
 #### Proof
 
@@ -118,21 +129,37 @@ $$ slope = \frac{\hat{SS_{max}}-\alpha_n \delta_n}{SS_{max}-\delta_n}$$
 
 The one caveat is that it possible for fitted models to have an increasing slope following the breakpoint ($\hat\beta > -\hat\alpha$) implying non compensatory effects. If this arises we take the mirror image of the fit (using $\hat\beta$ = $-\hat\alpha$ as the mirror) and proceed as described above.
 
-Current Values of $[k_1,k_2]$ are [0.5,1.5]
+Current Values of $[k_1,k_2]$ are :
+
+```{r break, echo=TRUE}
+hydramse::darwinRules$rangeOfBreakpoint
+```
+
 
 Note: Add figure showing segmented linear options
 
 
 ## Other food
 
-Other food in the model is assumed to to take one of the following values 10000, 15000, 20000, ..., 60000 and is selected at random. 
+Other food in the model is assumed to to take one of the following values:
+
+```{r otherfood, echo=TRUE}
+hydramse::darwinRules$otherFood
+```
+and is selected at random. 
 
 
 ## Criteria to accept simulated parameter values
 
-The multispecies model, Hydra, is then run (in the absence of stock recruitment error) with each set of simulated parameter values. The model in run for 100 years in the absence of fishing pressure to ensure all species can coexist. From the resulting state of the system, the model is run a further 53 under historic fishing pressure.
+The multispecies model, Hydra, is then run (in the absence of stock recruitment error) with each set of simulated parameter values. The model in run for 97 years in the absence of fishing pressure to ensure all species can coexist. From the resulting state of the system, the model is run a further 53 under historic fishing pressure.
 
-The output is then analysed to determin if these parameter values result in a multispecies fishery that reflect historically observed data.
+The output is then analysed to determin if these parameter values result in a multispecies fishery that reflect historically observed biomass and catch data
+
+```{r rules, echo=TRUE}
+hydramse::darwinRules$biomassRule
+hydramse::darwinRules$catchRule
+```
+These checks can be turned off by the user. Default = "on"
 
 ### Biomass evaluation
 
@@ -143,15 +170,27 @@ Immediately preceeding the period of fishing. The average biomass is calculated 
 
 The average biomass for each species is again calculated toward the end of the simulation. These values must also lie within limits. These limits are defined as a $[b_1 min(SS_{survey}),b_2 max(SS_{survey})]$ where the constants $b_1$ and $b_2$ are selected by the user.
 
-Current Values of $[b_1,b_2]$ are [0.5,2.0]
+Current Values of $[b_1,b_2]$ are:
 
-The number of years used to calculate the average biomass is an option for the user. Currently this is set to 10 years.
+```{r biomass, echo=TRUE}
+hydramse::darwinRules$biomassBounds
+```
+
+
+The number of years used to calculate the average biomass is an option for the user. Currently this is set to:
+
+```{r lastyears, echo=TRUE}
+hydramse::darwinRules$lastNPoints
+```
 
 If both criteria are satisfied for all species then catch is assessed.
 
 ### Catch evaluation
 
-Catch is assessed in the same way as biomass. The average catch at the end of the simulation must lie within limits defined as $[c_1 min(Landings),c_2 max(Landings)]$. Again the constants $c_1$ and $c_2$ are options for the user. Current they are [1,1]. If all three of these criteria are satisfied the parameter set simulated is considered acceptable. 
+Catch is assessed in the same way as biomass. The average catch at the end of the simulation must lie within limits defined as $[c_1 min(Landings),c_2 max(Landings)]$. Again the constants $c_1$ and $c_2$ are options for the user. Current they are:   
 
+```{r catch, echo=TRUE}
+hydramse::darwinRules$catchBounds
+```
 
-
+If all three of these criteria are satisfied the parameter set simulated is considered acceptable and a full set of scenario runs can be made
