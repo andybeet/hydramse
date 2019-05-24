@@ -2,7 +2,7 @@
 % Please edit documentation in R/rules_set.R
 \name{rule2_biomass}
 \alias{rule2_biomass}
-\title{Assess if model passes second biomass rule.}
+\title{Assess if model passes 2nd biomass rule.}
 \usage{
 rule2_biomass(biomass, nYrs, historicBounds, simulationRules)
 }

@@ -19,7 +19,7 @@
 
 # check to see if all within biomass bounds after a number of years without fishing
 rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
-  if (simulationRules$biomassRule == "off"){
+  if (simulationRules$biomassRule == F){
     return(pass <- F)
   }
 
@@ -45,7 +45,7 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 
 }
 
-#' Assess if model passes second biomass rule.
+#' Assess if model passes 2nd biomass rule.
 #'
 #' After a period of fishing pressure the species population are checked to ensure they fall withing historic bounds
 #'
@@ -62,7 +62,7 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 #' @export
 
 rule2_biomass <- function(biomass,nYrs,historicBounds,simulationRules) {
-  if (simulationRules$biomassRule == "off"){
+  if (simulationRules$biomassRule == F){
     return(pass <- F)
   }
   nSpecies <- dim(biomass)[1]
@@ -104,7 +104,7 @@ rule2_biomass <- function(biomass,nYrs,historicBounds,simulationRules) {
 #' @export
 
 rule3_landings <- function(catch,nYrs,historicBounds,simulationRules) {
-  if (simulationRules$catchRule == "off"){
+  if (simulationRules$catchRule == F){
     return(pass <- F)
   }
   nSpecies <- dim(catch)[1]
