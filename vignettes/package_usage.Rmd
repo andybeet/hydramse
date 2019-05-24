@@ -27,6 +27,18 @@ The functions in this package allow you to perform a sequence of events resultin
 1. Repeat until n valid sets of parameters have been obtained
 1. Compare all output (NOT YET DONE)
 
+## Model Setup
+
+Decisions need to be made regarding how long to run the model for in the absence of fishing (the number of years). This decision is based on how long the model takes to reach some kind of equilibrium (if it does at all). An equilibrium may not be reached if a species stock recruitment relationship is highly overcompensatory. This may reuslt in a highly cyclical behavior, possiblly around an average. It is recommended that the user specify the total length of the model run.
+
+Once specified the input data needed to create Hydra model data files (dat and pin) needs to be extended to accomodate these additional years of data.
+
+``` {r msetup, echo=TRUE}
+newData <- hydramse::lengthen_hydra_data(hydradata::hydraDataList,nYrs=150)
+```
+
+
+
 ## Simulation (Darwinian) study
 
 Methods used in the simulation study can be found [here](simulation_documentation.html)
