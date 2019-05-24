@@ -1,6 +1,7 @@
 #' Process model runs
 #'
-#' Reads in all of the model run data, processes it, and writes to an .rdata file. Details of the processing can be found in section below
+#' Reads in all of the model run data, processes it, and writes to an .rdata file. Details of the processing can be found in section below.
+#' Contents of rdata file are tidy and used in plotting routines
 #'
 #'@param data List. The hydra dataList \code{hydradata::hydraDataList}
 #'@param indices Character vector. The names of the indices of interest from the model run.
@@ -9,11 +10,14 @@
 #'@param outPutScenarioDirs list of scenario directories under the rootFolder
 #'@param revenueData Data frame (see \code{\link{process_single_scenario}})
 #'
-#'@return Nothing
+#'@return Nothing. RDS files are produced
 #'
 #'@section Processing details:
 #'
-#'Each scenario run ... more coming
+#'A model run (scenario) is considered to be n simulations of the Hydra model. Stochasticity differentiates each simulation.
+#'
+#'Each scenario/ model run is processed as in \code{\link{process_single_scenario}}. All of the processed scenarios and the relevant indices are then exported
+#'as an RDS file
 #'
 #'@export
 
@@ -45,7 +49,6 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
       species_catch <- array(dim = c(data$Nyrs,nScenarios,data$Nspecies),dimnames = list(yrNames,scenarioDirNames,speciesNames))
       guild_bio <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(yrNames,scenarioDirNames,guildNames))
       guild_catch <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(yrNames,scenarioDirNames,guildNames))
-      print("yioppee")
     }
     # indices
     dfI[,iRun,] <- listOfStuff$dfI
@@ -59,7 +62,6 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
   }
 
   # converts to tidy data and saves eventually pass these as argument
-
   outputs <- data.frame(variableNames = c("dfI","species_bio","species_catch","guild_bio","guild_catch"),
                         fileNames= c("indices.rds","species_bio_rate.rds","species_catch_rate.rds","guild_bio_rate.rds","guild_catch_rate.rds"))
   for (iv in 1:dim(outputs)[1]) {

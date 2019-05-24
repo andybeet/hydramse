@@ -46,7 +46,7 @@ lengthen_hydra_data <- function(data,nYrs){
   out$observedCatch <- cbind(matrix(mean(data$observedCatch),data$Nspecies,nYrsNofishing),data$observedCatch[2:(data$Nspecies+1),])
   out$observedCatch <- rbind(yrs,round(out$observedCatch),2)
 
-  out$observedEffort <- cbind(matrix(0,data$Nfleets,nYrsNofishing),data$observedEffort[2:(data$Nfleets+1),])
+  out$observedEffort <- cbind(matrix(1e-6,data$Nfleets,nYrsNofishing),data$observedEffort[2:(data$Nfleets+1),])
   out$observedEffort <- rbind(yrs,out$observedEffort)
 
   out$redundantRecDevs <- round(cbind(matrix(mean(data$redundantRecDevs),data$Nspecies,nYrsNofishing),data$redundantRecDevs),5)

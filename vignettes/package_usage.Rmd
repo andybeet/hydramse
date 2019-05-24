@@ -1,0 +1,34 @@
+---
+title: "How to use hydramse"
+output: rmarkdown::html_vignette
+
+vignette: >
+  %\VignetteIndexEntry{How to use hydramse}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+The functions in this package allow you to perform a sequence of events resulting in an MSE (Management Strategy Evaluation) type of workflow (Assumes package hydradata)
+
+1. Simulate a set of parameters that are assumed somewhat unknown
+1. Assess the validity of this parameter set.
+1. If assumed valid ,define a set of scenarios with ranges of exploitation rates (otherwise return to step 1)
+1. Create dat and pin files for each scenario. These are input files for Hydra model
+1. Run Hydra a number of times (with stochasticity)
+1. Process the output and produce plots
+1. Repeat until n valid sets of parameters have been obtained
+1. Compare all output (NOT YET DONE)
+
+## Simulation (Darwinian) study
+
+Methods used in the simulation study can be found [here](simulation_documentation.html)
+
+

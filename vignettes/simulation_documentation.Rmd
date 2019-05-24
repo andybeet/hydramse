@@ -1,14 +1,12 @@
 ---
 title: "Darwinian Process - simulation methods"
-output:
-  html_document:
-    collapsed: yes
-    number_sections: no
-    smooth_scrol: yes
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: yes
+output: rmarkdown::html_vignette
+
+vignette: >
+  %\VignetteIndexEntry{Darwinian Process - simulation methods}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 ---
 
 ```{r setup, include=FALSE}

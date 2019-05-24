@@ -21,14 +21,18 @@ process_model_runs(data, indices, scenarios, rootFolder,
 \item{revenueData}{Data frame (see \code{\link{process_single_scenario}})}
 }
 \value{
-Nothing
+Nothing. RDS files are produced
 }
 \description{
-Reads in all of the model run data, processes it, and writes to an .rdata file. Details of the processing can be found in section below
+Reads in all of the model run data, processes it, and writes to an .rdata file. Details of the processing can be found in section below.
+Contents of rdata file are tidy and used in plotting routines
 }
 \section{Processing details}{
 
 
-Each scenario run ... more coming
+A model run (scenario) is considered to be n simulations of the Hydra model. Stochasticity differentiates each simulation.
+
+Each scenario/ model run is processed as in \code{\link{process_single_scenario}}. All of the processed scenarios and the relevant indices are then exported
+as an RDS file
 }
 

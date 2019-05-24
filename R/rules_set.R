@@ -19,9 +19,14 @@
 
 # check to see if all within biomass bounds after a number of years without fishing
 rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
+  if (simulationRules$biomassRule == "off"){
+    return(pass <- F)
+  }
+
   nSpecies <- dim(biomass)[1]
   nYrs <- dim(biomass)[2]
-  nYrsNoFishing <- nYrs-nYrsFishing
+  nYrsNofishing <- nYrs-nYrsFishing
+
   # calculate the mean of the biomass in the last n years of no fishing
   noFishingBiomass <- rowMeans(biomass[,(nYrsNofishing-simulationRules$lastNPoints+1):nYrsNofishing])
 
@@ -57,7 +62,10 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 #' @export
 
 rule2_biomass <- function(biomass,nYrs,historicBounds,simulationRules) {
-
+  if (simulationRules$biomassRule == "off"){
+    return(pass <- F)
+  }
+  nSpecies <- dim(biomass)[1]
   fishingBiomass <- rowMeans(biomass[,(nYrs-simulationRules$lastNPoints+1):nYrs])
 
   # established the upper and lower bounds based on data in darwinData
@@ -96,6 +104,9 @@ rule2_biomass <- function(biomass,nYrs,historicBounds,simulationRules) {
 #' @export
 
 rule3_landings <- function(catch,nYrs,historicBounds,simulationRules) {
+  if (simulationRules$catchRule == "off"){
+    return(pass <- F)
+  }
   nSpecies <- dim(catch)[1]
   fishingCatch <- rowMeans(catch[,(nYrs-simulationRules$lastNPoints+1):nYrs])
 

@@ -8,8 +8,6 @@ inst/doc
 other
 data-raw
 *.txt
-
 #vignette files
 vignettes/*.html
 vignettes/*.pdf
-
