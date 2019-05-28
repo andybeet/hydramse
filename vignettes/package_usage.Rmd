@@ -31,16 +31,89 @@ The functions in this package allow you to perform a sequence of events resultin
 
 Decisions need to be made regarding how long to run the model for in the absence of fishing (the number of years). This decision is based on how long the model takes to reach some kind of equilibrium (if it does at all). An equilibrium may not be reached if a species stock recruitment relationship is highly overcompensatory. This may reuslt in a highly cyclical behavior, possiblly around an average. It is recommended that the user specify the total length of the model run.
 
-Once specified the input data needed to create Hydra model data files (dat and pin) needs to be extended to accomodate these additional years of data.
+Once specified, the underlying data used to create Hydra's data files (dat and pin) needs to be extended to accomodate these additional years of data.
 
-``` {r msetup, echo=TRUE}
+``` {r echo=TRUE,eval = FALSE}
 newData <- hydramse::lengthen_hydra_data(hydradata::hydraDataList,nYrs=150)
 ```
 
+Set up the locations for output (create if necessary):
+``` {r  echo=TRUE,eval =FALSE}
+outDirForDatPin <- here::here("darwin") # folder for dumping hydra output prior to analysis
+outPath <- here::here("successfulSims") # folder containing parameters of successful model runs
 
+if(!dir.exists(outDirForDatPin)){dir.create(outDirForDatPin)}
+if(!dir.exists(outPath)){dir.create(outPath)}
+```
 
 ## Simulation (Darwinian) study
 
-Methods used in the simulation study can be found [here](simulation_documentation.html)
+Methods used in the simulation study can be found [here](simulation_documentation.html). The code below should be included in a loop to simulate multiple parameter sets
 
+``` {r  eval=F, echo=T}
+  ipass <- 0
+  simulationRules <- hydramse::darwinRules
+  darwinD <- hydramse::darwinData
+
+  # simulate a set of parameters
+  simulatedValues <- hydramse::simulate_parameters(darwinD,simulationRules,SRFunctionChoice = NULL)
+  # combine with extended time series data for darwinian use
+  simulatedValues <- c(simulatedValues,newData)
+  hydraD <- hydramse::update_hydra_data(hydradata::hydraDataList,simulatedValues) # update with simulated values
+  # create dat and pin files
+  inputOptions <- hydradata::setup_default_inputs(outDir=outDirForDatPin) # gets options for hydraRuns
+  inputOptions$scenarioFlag <- "darwin"
+  hydraD$flagMSE <- 2 # reduces output from hydra run
+  hydraD$recStochastic <- hydraD$recStochastic*0 # no stochasticity used in model run
+  hydraD <- hydradata::create_datpin_files(inputOptions,hydraD) # creates dat and pin file
+  
+  ######################## run hydra ######################################
+  #specify the path the input files and the Hydra model executable
+  datPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".dat")
+  pinPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".pin")
+  exePath <- paste(pathToTPL,hydraVersion,sep="/")
+  hydramse::run_single_hydra(iseed=1,exePath=exePath,datPath=datPath,pinPath=pinPath)
+
+  # move output file
+  if (Sys.info()['sysname']=="Windows") {
+    shell(paste0("move *.text ",paste0(outDirForDatPin,"/")),intern=T) # move files to darwin folder
+  } else if (Sys.info()['sysname']=="Linux") {
+    system(paste0("mv *.text ",paste0(outDirForDatPin,"/")),intern=T) # move files to darwin folder
+  }
+```
+
+## Assess the validity of the parameter set
+
+Once the mode has run, the output needs to be processed and compared to historic data. If tests are passes this realization is saved for use in an MSE
+
+```{r eval= F,echo=T}
+  # processes output from model (1 file)
+  output <- hydramse::process_darwin_output(outDirForDatPin)
+  biomass <- output$biomass
+  catch <- output$catch
+  # Do these simulations satisfy the rules(historical equivalence)
+  ################################## No Fishing Biomass Rule ########################
+  # biomass after nYrsNofishing years - should reach equilibriums - > lowest SSB seen
+  rule1 <- hydramse::rule1_biomass(biomass,nYrsFishing,stockRecruitData$historicBounds,simulationRules)
+  if(rule1$pass == F) { next} # these parameter values are garbage. Simulate next set
+  ##################################  Fishing Biomass Rule ########################
+  # biomass after fishing years should fall between .5 * lowest survey and 2 * highest survey
+  # use mean of last 10 years
+  rule2 <- hydramse::rule2_biomass(biomass,nYrs,stockRecruitData$historicBounds,simulationRules)
+  if(rule2$pass == F) { next}
+  ################################## Catch Rule ########################
+  # catch falls between .5 and 2 * catch
+  rule3 <- hydramse::rule3_landings(catch,nYrs,stockRecruitData$historicBounds,simulationRules)
+  if(rule3$pass == F) { next}
+  
+  ipass <- ipass + 1
+  # save all data to RDA file for use in MSE
+  save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ipass,".Rda"))
+  
+  
+```
+
+## Define Scenarios for MSE
+
+Each parameter set that passes the tests are then used in an MSE type study. Details of which can be found in a the publication (Beet & Fogarty, 2020) 
 
