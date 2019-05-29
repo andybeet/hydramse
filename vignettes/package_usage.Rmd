@@ -16,20 +16,20 @@ knitr::opts_chunk$set(
 ```
 
 
-The functions in this package allow you to perform a sequence of events resulting in an MSE (Management Strategy Evaluation) type of workflow (Assumes package hydradata)
+The functions in this package allow you to perform a sequence of events resulting in an MSE (Management Strategy Evaluation) type of workflow (Assumes package hydradata and hydra_sim (tpl file)). This is not a stand alone package and needs to be used in conjunction with the aforementioned packages
 
-1. Simulate a set of parameters that are assumed somewhat unknown
+1. Simulate a set of parameters that are assumed somewhat unknown (assumes hydradata)
 1. Assess the validity of this parameter set.
 1. If assumed valid ,define a set of scenarios with ranges of exploitation rates (otherwise return to step 1)
-1. Create dat and pin files for each scenario. These are input files for Hydra model
-1. Run Hydra a number of times (with stochasticity)
+1. Create dat and pin files for each scenario. These are input files for Hydra model (assumes hydradata)
+1. Run Hydra a number of times (with stochasticity) (assumes hydra_sim)
 1. Process the output and produce plots
 1. Repeat until n valid sets of parameters have been obtained
 1. Compare all output (NOT YET DONE)
 
 ## Model Setup
 
-Decisions need to be made regarding how long to run the model for in the absence of fishing (the number of years). This decision is based on how long the model takes to reach some kind of equilibrium (if it does at all). An equilibrium may not be reached if a species stock recruitment relationship is highly overcompensatory. This may reuslt in a highly cyclical behavior, possiblly around an average. It is recommended that the user specify the total length of the model run.
+Decisions need to be made regarding how long to run the model for in the absence of fishing (the number of years). This decision is based on how long the model takes to reach some kind of equilibrium (if it does at all). An equilibrium may not be reached if a species stock recruitment relationship is highly overcompensatory. This may result in a highly cyclical behavior, possiblly around an average. It is recommended that the user specify the total length of the model run.
 
 Once specified, the underlying data used to create Hydra's data files (dat and pin) needs to be extended to accomodate these additional years of data.
 
@@ -46,6 +46,11 @@ if(!dir.exists(outDirForDatPin)){dir.create(outDirForDatPin)}
 if(!dir.exists(outPath)){dir.create(outPath)}
 ```
 
+Also need to set the name of the hydra's exe file
+```{r, eval=F,echo=T}
+hydraVersion <- "hydra_sim"
+```
+
 ## Simulation (Darwinian) study
 
 Methods used in the simulation study can be found [here](simulation_documentation.html). The code below should be included in a loop to simulate multiple parameter sets
@@ -58,8 +63,8 @@ Methods used in the simulation study can be found [here](simulation_documentatio
   # simulate a set of parameters
   simulatedValues <- hydramse::simulate_parameters(darwinD,simulationRules,SRFunctionChoice = NULL)
   # combine with extended time series data for darwinian use
-  simulatedValues <- c(simulatedValues,newData)
   hydraD <- hydramse::update_hydra_data(hydradata::hydraDataList,simulatedValues) # update with simulated values
+  hydraD <- hydramse::update_hydra_data(hydradata::hydraDataList,noFishingData) # update with simulated values
   # create dat and pin files
   inputOptions <- hydradata::setup_default_inputs(outDir=outDirForDatPin) # gets options for hydraRuns
   inputOptions$scenarioFlag <- "darwin"
@@ -67,7 +72,7 @@ Methods used in the simulation study can be found [here](simulation_documentatio
   hydraD$recStochastic <- hydraD$recStochastic*0 # no stochasticity used in model run
   hydraD <- hydradata::create_datpin_files(inputOptions,hydraD) # creates dat and pin file
   
-  ######################## run hydra ######################################
+  # run hydra 
   #specify the path the input files and the Hydra model executable
   datPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".dat")
   pinPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".pin")
@@ -92,28 +97,111 @@ Once the mode has run, the output needs to be processed and compared to historic
   biomass <- output$biomass
   catch <- output$catch
   # Do these simulations satisfy the rules(historical equivalence)
-  ################################## No Fishing Biomass Rule ########################
-  # biomass after nYrsNofishing years - should reach equilibriums - > lowest SSB seen
+  # No Fishing Biomass Rule. assumes equilibrium is reached
   rule1 <- hydramse::rule1_biomass(biomass,nYrsFishing,stockRecruitData$historicBounds,simulationRules)
-  if(rule1$pass == F) { next} # these parameter values are garbage. Simulate next set
-  ##################################  Fishing Biomass Rule ########################
-  # biomass after fishing years should fall between .5 * lowest survey and 2 * highest survey
-  # use mean of last 10 years
+  if(rule1$pass == F) { next}
+  #  Fishing Biomass Rule. use mean of last 10 years
   rule2 <- hydramse::rule2_biomass(biomass,nYrs,stockRecruitData$historicBounds,simulationRules)
   if(rule2$pass == F) { next}
-  ################################## Catch Rule ########################
-  # catch falls between .5 and 2 * catch
+  # Catch Rule
   rule3 <- hydramse::rule3_landings(catch,nYrs,stockRecruitData$historicBounds,simulationRules)
   if(rule3$pass == F) { next}
   
   ipass <- ipass + 1
   # save all data to RDA file for use in MSE
-  save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ipass,".Rda"))
+  darwinRes <- list(hydraDarwin=hydraD,simulatedValues=simulatedValues,simulationRules=simulationRules,inputOptions=inputOptions)
+  saveRDS(darwinRes,file=paste0(outPath,"/success",ipass,".RDS"))
   
   
 ```
 
 ## Define Scenarios for MSE
 
-Each parameter set that passes the tests are then used in an MSE type study. Details of which can be found in a the publication (Beet & Fogarty, 2020) 
+Each parameter set that passes the tests are then used in an MSE type study. Details of which can be found in a the publication (Beet & Fogarty, 2020). The parameter set can be read from .Rda file or passed straight from the darwin study. Here we assume it is read from the rda file. This simulated data set is used to create all o fthe dat an dpin files required for each scenario/ exploitation rate combination
 
+```{r,eval=F,echo=T}
+rootFolder <- "define_the_folder_where_output_for_all_scenario_runs_be_stored"
+darwinRes <- readRDS(file=paste0(outPath,"/success1.RDS")) # read in the RDS
+dataToUse <- hydramse::update_hydra_data(hydradata::hydraDataList,darwinRes$simulatedValues)# sets the simulated values to the hydra model data
+hcrTypes=c("Fixed","Ramp") # harvest control rules types
+hcrLevels=c("Complex","HTSpecies","LTSpecies") #harvest control rule levels
+scenarios <- apply(expand.grid(hcrTypes,hcrLevels),1,paste,collapse="")
+# Create harvest control rule levels
+dataToUse <- hydradata::set_hcr(dataToUse,minMaxExploitations = c(.05,0.4),increment=0.05)
+dataToUse$flagMSE <- 1
+exploitationRates = round(100*dataToUse$exploitationOptions[dataToUse$Nthresholds,])
+# create folder structure for run (given exploitation rates). This creates folders in users working directory
+folderStructure <- hydramse::create_folder_setup(rootFolder,exploitationRates = exploitationRates)
+scenarios <- unique(apply(as.matrix(subset(folderStructure,select=c("hcrType","hcrLevels"))),1,function(x) paste0(x,collapse = "")))
+folderDirs <- apply(folderStructure,1,function(x) paste0(x,collapse = "")) # vector of dirs
+outputScenarioDirs <-  here::here(rootFolder,paste0("Exploitation",folderDirs))
+
+for (iscenario in 1:length(outputScenarioDirs)) {
+  outputScenarioDir <- outputScenarioDirs[iscenario]
+  print(outputScenarioDir)
+  # set up scenario types to run
+  if (grepl("LT",folderStructure$hcrLevels[iscenario])) speciesFlag <- "low"
+  if (grepl("HT",folderStructure$hcrLevels[iscenario])) speciesFlag <- "high"
+  if (grepl("omplex",folderStructure$hcrLevels[iscenario])) speciesFlag <- "none"
+  scenarioInputs <- hydradata::setup_default_inputs(outDir=outputScenarioDir,scenarioFlag="assessment",temperatureFlag="mean",
+                                                    scenarioType=folderStructure$hcrType[iscenario],maxExploitationRate=as.numeric(folderStructure$exploitationRate[iscenario]),
+                                                    assessmentSpeciesFlag=speciesFlag)
+
+  # create dat and pin files for scenario
+  dataToPrint <- hydradata::create_datpin_files(listOfParameters=scenarioInputs, dataList=dataToUse)
+}
+```
+
+## Run the hydra model for each scenario
+
+Once the folder structure has been created and the dat and pin files saved into each scenarios respective folder then the model can be run any nimber of times for each scenario. The model can be run in series or in parallel. This is dependent on the number of cores available on your machine or server
+
+``` {r eval=F, echo = T}
+   #nCores <- parallel::detectCores()-1
+   #cl <- parallel::makeCluster(nCores)
+
+   nSims <- 100 # set number of simulation for each scenario
+   exePath <- paste(pathToTPL,hydraVersion,sep="/")
+  for (iscenario in 1:dim(folderStructure)[1]) {
+    datpinPath <- here::here(rootFolder,paste0("Exploitation",paste0(folderStructure[iscenario,],collapse="")))
+    datPath <- paste0(datpinPath,"/",hydraVersion,".dat")
+    pinPath <- paste0(datpinPath,"/",hydraVersion,".pin")
+    #parallel::parLapply(cl,1:nSims,hydramse::run_single_hydra,exePath=exePath,datPath=datPath,pinPath=pinPath)
+    lapply(1:nSims,hydramse::run_single_hydra,exePath=exePath,datPath=datPath,pinPath=pinPath)
+    # move files
+    if (Sys.info()['sysname']=="Windows") {
+      shell(paste0("move *.txt ",paste0(datpinPath,"/indices")),intern=T) # move files to assessment folder
+    } else if (Sys.info()['sysname']=="Linux") {
+      system(paste0("mv *.txt ",paste0(datpinPath,"/indices")),intern=T) # move files to assessment folder
+    }
+  }
+   #parallel::stopCluster(cl)
+
+```
+
+## Process the output 
+
+nSim files are created for each scenario run and are stored in the "indices" folder under each scenario. These files are processed for all scenarios and exported to RDS files for plotting. The output files from Hydra contain only the variables listed in the variable "indices" below. This speeds up run time. If indices from outside the model are to be included then they need to be read in and passed to process_model_runs()
+
+```{r, eval = F,echo = T}
+indices <- c("index_LFI_Catch","index_LFI_Biomass","index_stdev_catch","avByr","est_catch_biomass","index_status_species","index_status_guild")
+rD <- read.csv("revenuePricePerPound2012.csv",header=TRUE)
+otherData <- list()
+otherData$name = rD[,1]
+otherData$ppp = rD[,2]
+hydramse::process_model_runs(dataToUse,indices,scenarios,rootFolder,outputScenarioDirs,otherData,outputType="indices")
+
+```
+
+## Plotting the output
+
+For each of the harvest control rule type/level combinations:
+1. A series of boxplots are made to compare biomass, catch, and species/guild status against exploitation rate.
+1. Equivalent Line plots are also made
+1. Production function plots are also made for each guild
+1. Radar plots are made to compare the performace of each oth the indices
+
+Still in Development
+``` {r, eval=F, echo=T}
+ hydramse::plot_box_whiskers(here::here(),rootFolder,inputFile="species_bio_rate.rds")
+```
