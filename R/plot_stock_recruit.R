@@ -1,9 +1,10 @@
 #'Plots Stock recruitment model
 #'
-#'Uses parameter values found in lazy loaded data \code{darwinRules}. These models are considered starting points for simulation study
-#'FINISH LATER
+#'Plots SR models found in lazy loaded data \code{darwinRules}.
+#'Overlays with simulated stock recruitment models
 #'
 #'@param data List. lazy data \code{darwinData} is default
+#'@param stockRecruitData NOT FINISHED
 #'
 #'@importFrom ggplot2 aes
 #'@export
