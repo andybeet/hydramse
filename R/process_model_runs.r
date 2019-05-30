@@ -66,7 +66,8 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
                         fileNames= c("indices.rds","species_bio_rate.rds","species_catch_rate.rds","guild_bio_rate.rds","guild_catch_rate.rds"))
   for (iv in 1:dim(outputs)[1]) {
     data <- get(as.character(outputs$variableNames[iv]))
-    data <- reshape2::melt(data)
+    #data <- reshape2::melt(data)
+    data <- tidyr::gather(data)
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
     data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)
     data <- data %>% dplyr::mutate(Scenario=stringr::str_replace(Scenario,"Exploitation",""))

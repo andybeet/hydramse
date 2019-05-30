@@ -3,16 +3,17 @@
 #' Reads in hydra output from the specified darwin run
 #'
 #' @param filePath Character string. Path to where output files exist
+#' @param speciesList Character string. List of species in order
 #'
 #' @return A List:
-#' \item{biomass}{matrix (nSpecies x nYrs). Average biomass (avByr) for each species in each year}
-#' \item{catch}{matrix (nSpecies x nYrs). Average catch (est_catch_biomass) for each species in each year}
+#' \item{biomass}{tidy data frame.(nSpecies * nYrs x 2). Average biomass (avByr) for each species in each year}
+#' \item{catch}{tidy data frame (nSpecies * nYrs x 2). Average catch (est_catch_biomass) for each species in each year}
 #'
 #'
 #' @export
 
 
-process_darwin_output<- function(filePath){
+process_darwin_output<- function(filePath,speciesList){
   fname<-list.files(path=filePath,pattern="\\.text$")
 
   if (length(fname)== 0) {
@@ -38,6 +39,12 @@ process_darwin_output<- function(filePath){
     biomass[iline,] <- (as.numeric(strsplit(fIn[lineNum+iline]," ")[[1]]))
   }
   biomass <- biomass[,-1] # remove first column
+  rownames(biomass) <- speciesList
+  colnames(biomass) <- c(1:nYrs)
+  biomass <- tibble::rownames_to_column(as.data.frame(biomass))
+  biomass <- tidyr::gather(biomass,Year,Biomass, -rowname)
+  biomass$Year <- as.numeric(biomass$Year)
+  names(biomass)[1] <- "Species"
 
   #catch
   lineNum <- grep("est_catch_biomass",fIn)
@@ -46,8 +53,13 @@ process_darwin_output<- function(filePath){
     catch[iline,] <- (as.numeric(strsplit(fIn[lineNum+iline]," ")[[1]]))
   }
   catch <- catch[,-1] #remove 1st column
+  rownames(catch) <- speciesList
+  colnames(catch) <- c(1:nYrs)
+  catch <- tibble::rownames_to_column(as.data.frame(catch))
+  catch <- tidyr::gather(catch,Year,Catch, -rowname)
+  catch$Year <- as.numeric(catch$Year)
+  names(catch)[1] <- "Species"
 
-  return(list(catch=catch,biomass=biomass) )
-
+  return(list(catch=catch,biomass=biomass))
 }
 

@@ -4,15 +4,17 @@
 \alias{process_darwin_output}
 \title{processes output from Darwin run}
 \usage{
-process_darwin_output(filePath)
+process_darwin_output(filePath, speciesList)
 }
 \arguments{
 \item{filePath}{Character string. Path to where output files exist}
+
+\item{speciesList}{Character string. List of species in order}
 }
 \value{
 A List:
-\item{biomass}{matrix (nSpecies x nYrs). Average biomass (avByr) for each species in each year}
-\item{catch}{matrix (nSpecies x nYrs). Average catch (est_catch_biomass) for each species in each year}
+\item{biomass}{tidy data frame.(nSpecies * nYrs x 2). Average biomass (avByr) for each species in each year}
+\item{catch}{tidy data frame (nSpecies * nYrs x 2). Average catch (est_catch_biomass) for each species in each year}
 }
 \description{
 Reads in hydra output from the specified darwin run
