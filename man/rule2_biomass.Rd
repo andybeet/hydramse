@@ -4,12 +4,10 @@
 \alias{rule2_biomass}
 \title{Assess if model passes 2nd biomass rule.}
 \usage{
-rule2_biomass(biomass, nYrs, historicBounds, simulationRules)
+rule2_biomass(biomass, historicBounds, simulationRules)
 }
 \arguments{
 \item{biomass}{matrix. (nSpecies x nYrs) average biomass (avByr variable)}
-
-\item{nYrs}{scalar. Total number of years in simulation}
 
 \item{historicBounds}{matrix. (nSpecies x ??) from lazy data \code{darwinData}}
 

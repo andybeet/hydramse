@@ -4,11 +4,9 @@
 \alias{rule3_landings}
 \title{Assess if model passes catch rule.}
 \usage{
-rule3_landings(catch, nYrs, historicBounds, simulationRules)
+rule3_landings(catch, historicBounds, simulationRules)
 }
 \arguments{
-\item{nYrs}{scalar. Total number of years in simulation}
-
 \item{historicBounds}{matrix. (nSpecies x ??) from lazy data \code{darwinData}}
 
 \item{simulationRules}{list. adapted from lazy data  \code{darwinRules}}
