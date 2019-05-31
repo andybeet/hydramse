@@ -4,7 +4,7 @@
 \alias{rule2_biomass}
 \title{Assess if model passes 2nd biomass rule.}
 \usage{
-rule2_biomass(biomass, historicBounds, simulationRules)
+rule2_biomass(biomass, historicBounds, simulationRules, speciesList)
 }
 \arguments{
 \item{biomass}{matrix. (nSpecies x nYrs) average biomass (avByr variable)}
@@ -12,6 +12,8 @@ rule2_biomass(biomass, historicBounds, simulationRules)
 \item{historicBounds}{matrix. (nSpecies x ??) from lazy data \code{darwinData}}
 
 \item{simulationRules}{list. adapted from lazy data  \code{darwinRules}}
+
+\item{speciesList}{Character vector. Names of species as defined in lazily loaded data set}
 }
 \value{
 List

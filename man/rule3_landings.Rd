@@ -4,12 +4,14 @@
 \alias{rule3_landings}
 \title{Assess if model passes catch rule.}
 \usage{
-rule3_landings(catch, historicBounds, simulationRules)
+rule3_landings(catch, historicBounds, simulationRules, speciesList)
 }
 \arguments{
 \item{historicBounds}{matrix. (nSpecies x ??) from lazy data \code{darwinData}}
 
 \item{simulationRules}{list. adapted from lazy data  \code{darwinRules}}
+
+\item{speciesList}{Character vector. Names of species as defined in lazily loaded data set}
 
 \item{biomass}{matrix. (nSpecies x nYrs) average biomass (avByr variable)}
 }

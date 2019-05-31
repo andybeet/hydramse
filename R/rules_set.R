@@ -10,6 +10,7 @@
 #' @param nYrsFishing scalar. Number of fishing years simulated
 #' @param historicBounds matrix. (nSpecies x ??) from lazy data \code{darwinData}
 #' @param simulationRules list. adapted from lazy data  \code{darwinRules}
+#' @param speciesList Character vector. Names of species as defined in lazily loaded data set
 #'
 #' @return List
 #' \item{lowerBoolean}{boolean vector (nSpecies). Denotes which species populations were above historic lower bounds.}
@@ -20,7 +21,7 @@
 #' @export
 
 # check to see if all within biomass bounds after a number of years without fishing
-rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
+rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules,speciesList) {
   if (simulationRules$biomassRule == F){
     return(pass <- F)
   }
@@ -38,6 +39,8 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 
   # find the minuimum allowable level for this species
   threshold1lower <- pmin(historicBounds$min_survey,historicBounds$CurtiThesis_minBio,na.rm=T)
+  names(threshold1lower) <- speciesList
+  threshold1lower <- threshold1lower[order(names(threshold1lower))]
 
   rule1lower <- noFishingBiomass$mean > threshold1lower
 
@@ -58,6 +61,7 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 #' @param biomass matrix. (nSpecies x nYrs) average biomass (avByr variable)
 #' @param historicBounds matrix. (nSpecies x ??) from lazy data \code{darwinData}
 #' @param simulationRules list. adapted from lazy data  \code{darwinRules}
+#' @param speciesList Character vector. Names of species as defined in lazily loaded data set
 #'
 #' @return List
 #' \item{lowerBoolean}{boolean vector (nSpecies). Denotes which species populations were above historic lower bounds.}
@@ -66,7 +70,7 @@ rule1_biomass <- function(biomass,nYrsFishing,historicBounds,simulationRules) {
 
 #' @export
 
-rule2_biomass <- function(biomass,historicBounds,simulationRules) {
+rule2_biomass <- function(biomass,historicBounds,simulationRules,speciesList) {
   if (simulationRules$biomassRule == F){
     return(pass <- F)
   }
@@ -84,6 +88,12 @@ rule2_biomass <- function(biomass,historicBounds,simulationRules) {
   # established the upper and lower bounds based on data in darwinData
   threshold2lower <- simulationRules$biomassBounds[1]*pmin(historicBounds$min_survey,historicBounds$CurtiThesis_minBio,na.rm=T)
   threshold2upper <- simulationRules$biomassBounds[2]*pmax(historicBounds$max_survey,historicBounds$CurtiThesis_maxBio,na.rm=T)
+
+  names(threshold2lower) <- speciesList
+  threshold2lower <- threshold2lower[order(names(threshold2lower))]
+  names(threshold2upper) <- speciesList
+  threshold2upper <- threshold2upper[order(names(threshold2upper))]
+
 
   # evaluates the rule
   rule2upper <- (fishingBiomass$mean < threshold2upper)
@@ -107,6 +117,7 @@ rule2_biomass <- function(biomass,historicBounds,simulationRules) {
 #' @param biomass matrix. (nSpecies x nYrs) average biomass (avByr variable)
 #' @param historicBounds matrix. (nSpecies x ??) from lazy data \code{darwinData}
 #' @param simulationRules list. adapted from lazy data  \code{darwinRules}
+#' @param speciesList Character vector. Names of species as defined in lazily loaded data set
 #'
 #' @return List
 #' \item{lowerBoolean}{boolean vector (nSpecies). Denotes which species populations were above historic lower bounds.}
@@ -115,7 +126,7 @@ rule2_biomass <- function(biomass,historicBounds,simulationRules) {
 #'
 #' @export
 
-rule3_landings <- function(catch,historicBounds,simulationRules) {
+rule3_landings <- function(catch,historicBounds,simulationRules,speciesList) {
   if (simulationRules$catchRule == F){
     return(pass <- F)
   }
@@ -132,6 +143,12 @@ rule3_landings <- function(catch,historicBounds,simulationRules) {
   # established the upper and lower bounds based on data in darwinData
   threshold3lower <- simulationRules$catchBounds[1]*historicBounds$minLandings
   threshold3upper <- simulationRules$catchBounds[2]*historicBounds$maxLandings
+
+  names(threshold3lower) <- speciesList
+  threshold3lower <- threshold3lower[order(names(threshold3lower))]
+  names(threshold3upper) <- speciesList
+  threshold3upper <- threshold3upper[order(names(threshold3upper))]
+
   #evaluate the rules
   rule3upper <- (fishingCatch$mean < threshold3upper)
   rule3lower <-  (fishingCatch$mean > threshold3lower)
