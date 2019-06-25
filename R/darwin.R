@@ -12,6 +12,7 @@
 #' @param inputOptions List. Set of input values to determin run type
 #' @param pathToTPL String. Path to location of Hydra executable
 #' @param hydraVersion String. Name of the Hydra executable
+#' @param boolPlot. Boolean. True if plotting of biomass and catch are required. Default = FALSE
 #'
 #' @return
 #' \item{nSuccesses}{Number of simulated parameter sets that pass the biomass and catch criteria. These successful sets will be saved as rds files in the \code{successfulSims}
@@ -25,7 +26,7 @@
 #'
 #' @export
 
-darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion){
+darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion,boolPlot=F){
   # create folders for storing temporary files and saved output
   nYrsFishing <- hydradata::hydraDataList$Nyrs
   outDirForDatPin <- here::here("darwin")
@@ -85,8 +86,10 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
     output <- hydramse::process_darwin_output(outDirForDatPin,speciesList=hydraD$speciesList)
     biomass <- output$biomass
     catch <- output$catch
-    hydramse::plot_darwin_output(biomass,"Biomass",nYrsFishing,simulationRules)
-    hydramse::plot_darwin_output(catch,"Catch",nYrsFishing,simulationRules)
+    if (boolPlot == T) {
+      hydramse::plot_darwin_output(biomass,"Biomass",nYrsFishing,simulationRules)
+      hydramse::plot_darwin_output(catch,"Catch",nYrsFishing,simulationRules)
+    }
 
     # Do these simulations satisfy the rules
     ################################## No Fishing Biomass Rule ########################
