@@ -42,13 +42,14 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
 
     # now we need to massage output and save in an RDS file
     indicesNames <- colnames(listOfStuff$dfI)
+    print(indicesNames)
     if(iRun == 1) {
       # preallocate some memory
-      dfI <- array(dim=c(data$Nyrs,nScenarios,length(indicesNames)),dimnames = list(yrNames,scenarioDirNames,indicesNames))
-      species_bio <- array(dim = c(data$Nyrs,nScenarios,data$Nspecies),dimnames = list(yrNames,scenarioDirNames,speciesNames))
-      species_catch <- array(dim = c(data$Nyrs,nScenarios,data$Nspecies),dimnames = list(yrNames,scenarioDirNames,speciesNames))
-      guild_bio <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(yrNames,scenarioDirNames,guildNames))
-      guild_catch <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(yrNames,scenarioDirNames,guildNames))
+      dfI <- array(dim=c(data$Nyrs,nScenarios,length(indicesNames)),dimnames = list(year = yrNames,scenario=scenarioDirNames,index=indicesNames))
+      species_bio <- array(dim = c(data$Nyrs,nScenarios,data$Nspecies),dimnames = list(year = yrNames,scenario = scenarioDirNames,index = speciesNames))
+      species_catch <- array(dim = c(data$Nyrs,nScenarios,data$Nspecies),dimnames = list(year = yrNames,scenario = scenarioDirNames,index = speciesNames))
+      guild_bio <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(year = yrNames,scenario = scenarioDirNames,index = guildNames))
+      guild_catch <- array(dim = c(data$Nyrs,nScenarios,data$numGuilds),dimnames = list(year = yrNames,scenario = scenarioDirNames,index = guildNames))
     }
     # indices
     dfI[,iRun,] <- listOfStuff$dfI
@@ -65,10 +66,13 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
   outputs <- data.frame(variableNames = c("dfI","species_bio","species_catch","guild_bio","guild_catch"),
                         fileNames= c("indices.rds","species_bio_rate.rds","species_catch_rate.rds","guild_bio_rate.rds","guild_catch_rate.rds"))
   for (iv in 1:dim(outputs)[1]) {
-    data <- get(as.character(outputs$variableNames[iv]))
+    data <- get(as.character(outputs$variableNames[iv])) # return the value of data
+    colHeaders <- dimnames(data)$index
+    data <- plyr::adply(data,c(1,2)) # converts array to dataframe
     #data <- reshape2::melt(data)
-    data <- tidyr::gather(data)
+    data <- tidyr::gather(data,key="Type",value="Value",colHeaders) # tidyfies data
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
+    # splits column into two
     data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)
     data <- data %>% dplyr::mutate(Scenario=stringr::str_replace(Scenario,"Exploitation",""))
     saveRDS(data,file=here::here(rootFolder,outputs$fileNames[iv]))

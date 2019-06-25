@@ -1,6 +1,6 @@
 #' plot output from darwin simulation runs
 #'
-#' Used to explore output from simulation study to visualize issues
+#' Used to explore output (catch and biomass) from simulation study to visualize issues
 #'
 #'@param data tidy data frame (Species, Year, type). type = Biomass or Catch.
 #'@param nYrsFishing Numeric scalar. Number of fishing years

@@ -11,10 +11,13 @@ RoxygenNote: 6.1.0
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
-Imports: parallel,
+Imports: 
+    parallel,
     stringr,
     dplyr,
     here,
     readxl,
     tidyr,
-    tibble
+    tibble,
+    plyr,
+    openxlsx
