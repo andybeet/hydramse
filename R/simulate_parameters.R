@@ -75,13 +75,17 @@ simulate_parameters <- function(stockRecruitParams=darwinData,simulationRules=da
   # assign the approriate flag to recType. Hydra uses this to simulate from a defined SR function
   # 6 = shepher, 7 = hockey, 8 = segmented
   recType <- SRFunctionChoice * 6 # set all 1's to shepherd
+  recName <- rep("shepherd",nSpecies)
   recType[(SRFunctionChoice==0) & (simulationRules$SRType == 2)] <- 8 # set some 0's to 8
+  recName[(SRFunctionChoice==0) & (simulationRules$SRType == 2)] <- "segmented" # set some 0's to 8
   recType[(SRFunctionChoice==0) & (simulationRules$SRType == 1)] <- 7 # set some 0's to 7
+  recName[(SRFunctionChoice==0) & (simulationRules$SRType == 1)] <- "hockey" # set some 0's to 7
 
   # combine fields
   simulatedValues <- c(simulatedValues,shepherdList,segmentedList,hockeyList)
   simulatedValues$recSigma <- recSigma
   simulatedValues$recType <- recType
+  simulatedValues$recName <- recName
 
   return(simulatedValues)
 }
