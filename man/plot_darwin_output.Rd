@@ -9,10 +9,12 @@ plot_darwin_output(data, yVar, nYrsFishing, simulationRules)
 \arguments{
 \item{data}{tidy data frame (Species, Year, type). type = Biomass or Catch.}
 
+\item{yVar}{Character string. Name of Variable to be plotted ("Biomass" or "Catch")}
+
 \item{nYrsFishing}{Numeric scalar. Number of fishing years}
 
 \item{simulationRules}{List. List of rules used in simulation process (\code{\link{darwinRules}})}
 }
 \description{
-Used to explore output from simulation study to visualize issues
+Used to explore output (catch and biomass) from simulation study to visualize issues
 }

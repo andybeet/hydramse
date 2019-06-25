@@ -3,6 +3,7 @@
 #' Used to explore output (catch and biomass) from simulation study to visualize issues
 #'
 #'@param data tidy data frame (Species, Year, type). type = Biomass or Catch.
+#'@param yVar Character string. Name of Variable to be plotted ("Biomass" or "Catch")
 #'@param nYrsFishing Numeric scalar. Number of fishing years
 #'@param simulationRules List. List of rules used in simulation process (\code{\link{darwinRules}})
 #'
@@ -18,11 +19,11 @@ plot_darwin_output <- function(data,yVar,nYrsFishing,simulationRules) {
 
   #plot biomass
 
-  ggplot2::ggplot(data) +
+  p <- ggplot2::ggplot(data) +
     ggplot2::geom_line(mapping = ggplot2::aes_(x=as.name("Year"),y=as.name(yVar)),na.rm=T) +
     ggplot2::facet_wrap(~Species,nrow=4,ncol=3,scales="free_y")
 
-
+  print(p)
   # for (ispecies in 1:nSpecies) {
   #   plot(biomass[ispecies,],type="l",col="black",main=startingRules$species[ispecies],ylim=c(0,max(biomass[ispecies,])),xlab="time",ylab="metric")
   #   lines(c(1,length(biomass[ispecies,])),rep(0.5*min(startingRules$min_survey[ispecies],startingRules$CurtiThesis_minBio[ispecies],na.rm=T),2),col="red")
