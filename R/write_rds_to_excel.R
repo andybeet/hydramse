@@ -12,6 +12,7 @@
 
 write_rds_to_excel <- function(filePath,filenames) {
 
+  OUT <- openxlsx::createWorkbook()
   # split filename, read in , write out 3rd dimention to a a separate sheet in excel
   for (fname in filenames) {
     fn <- head(unlist(strsplit(fname,"\\.")),1)
@@ -20,8 +21,11 @@ write_rds_to_excel <- function(filePath,filenames) {
     objectNames <- as.character(unique(fileContents$Type))
 
     for (isheet in 1:length(objectNames)) {
+      openxlsx::addWorksheet(OUT,objectNames[isheet])
       outData <- fileContents %>% dplyr::filter(Type == objectNames[isheet])
-      xlsx::write.xlsx(outData,file=paste0(filePath,"/",fn,".xlsx"),sheetName=objectNames[isheet],row.names=F,col.names=T,append=T)
+      openxlsx::writeData(OUT,sheet = objectNames[isheet],x=outData,rowNames=F,colNames=T)
+      #xlsx::write.xlsx(outData,file=paste0(filePath,"/",fn,".xlsx"),sheetName=objectNames[isheet],row.names=F,col.names=T,append=T)
     }
   }
+  openxlsx::saveWorkbook(OUT,file=paste0(filePath,"/",fn,".xlsx"),overwrite = T)
 }
