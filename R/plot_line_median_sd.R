@@ -36,10 +36,16 @@ plot_line_median_sd <- function(filePath,rootFolder,inputFile,dataType,scaling =
     currentScenario <- scenarioType[iscenarioTypes]
     print(paste0("processing plots for Scenario = ",currentScenario))
 
-    scenarioData <- data %>% dplyr::filter(Scenario==currentScenario)
+    scenarioData <- data %>%
+      dplyr::filter(Scenario==currentScenario) %>%
+      dplyr::group_by(Type,Exploitation) %>%
+      dplyr::mutate(medVal = median(Value/scalingFactor), lower5 = quantile(Value/scalingFactor,.05), upper95 = quantile(Value/scalingFactor,.95)) %>%
+      dplyr::select(Exploitation,Type,medVal,lower5,upper95)
 
     p <- ggplot2::ggplot(data = scenarioData) +
-      ggplot2::geom_line(mapping = aes(x = Exploitation, y=median(Value/scalingFactor))) +
+      ggplot2::geom_line(mapping = aes(x = Exploitation, y=medVal,group=1)) +
+      ggplot2::geom_line(mapping = aes(x = Exploitation, y = lower5,group=1),linetype = "dashed") +
+      ggplot2::geom_line(mapping = aes(x = Exploitation, y = upper95,group=1),linetype = "dashed") +
       ggplot2::facet_wrap(~Type,nrow=4,ncol=3,scales="free_y") +
       ggplot2::scale_x_discrete(labels= as.character(as.numeric(unique(scenarioData$Exploitation))/100))+
       ggplot2::theme(axis.text.x = element_text(angle = 90, hjust = 1)) +

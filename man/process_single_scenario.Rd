@@ -5,7 +5,7 @@
 \title{Process all runs for a given scenario}
 \usage{
 process_single_scenario(modelOutput, indices, revenueData,
-  convertBiomassTolbs = 2204.62)
+  convertBiomassTolbs = 2204.62, nLastYrs = 20)
 }
 \arguments{
 \item{modelOutput}{List (length = nSims) content of files created by running Hydra}
@@ -15,14 +15,17 @@ process_single_scenario(modelOutput, indices, revenueData,
 \item{revenueData}{Data frame. External revenue data (names = character vector of species names, ppp = price ($) per pound)}
 
 \item{convertBiomassTolbs}{Numeric scalar. 1 metric tonne = 2204.62 lbs (default)}
+
+\item{nLastYrs}{Numeric scalar. Number of trailing years in each run to take mean over. Default = 20 (Last 20 yrs of sim)}
 }
 \value{
 A list containing the following items:
 \item{species_bio}{matrix (nYears x nSpecies) of median biomass (over nSims)}
 \item{species_catch}{matrix (nYears x nSpecies) of median catch (over nsims)}
 \item{guild_bio}{matrix (nYears n nGuilds) of median biomass by guild (over nsims)}
-\item{guild_catch}{matrix (nYears n nGuilds) of median catch by guild (over nsims)}
+\item{guild_catch}{matrix (nYears x nGuilds) of median catch by guild (over nsims)}
 \item{dfI}{data frame. Each column represents an index. Each row represent a year. see section below}
+\item{catch_runs}{matrix (nGuilds x nruns). Mean of the last x years of each run }
 }
 \description{
 A scenario is defined a a harvest control rule with a maximum exploitation rate.

@@ -5,7 +5,7 @@
 \title{Process model runs}
 \usage{
 process_model_runs(data, indices, scenarios, rootFolder,
-  outPutScenarioDirs, revenueData, outputType = "indices")
+  outPutScenarioDirs, revenueData, outputType = "indices", nLastYrs)
 }
 \arguments{
 \item{data}{List. The hydra dataList \code{hydradata::hydraDataList}}
@@ -19,13 +19,17 @@ process_model_runs(data, indices, scenarios, rootFolder,
 \item{outPutScenarioDirs}{list of scenario directories under the rootFolder}
 
 \item{revenueData}{Data frame (see \code{\link{process_single_scenario}})}
+
+\item{outputType}{Character string. Name of folder where Hydra output files are stored ("indices","diagnostics")}
+
+\item{nLastYrs}{Numeric scalar. Number of trailing years in each run to take mean over. Default = 20 (Last 20 yrs of sim)}
 }
 \value{
 Nothing. RDS files are produced
 }
 \description{
-Reads in all of the model run data, processes it, and writes to an .rdata file. Details of the processing can be found in section below.
-Contents of rdata file are tidy and used in plotting routines
+Reads in all of the model run data, processes it, and writes to an .rds file. Details of the processing can be found in section below.
+Contents of rds file are tidy and used in plotting routines
 }
 \section{Processing details}{
 
