@@ -8,14 +8,16 @@
 #'@param indices Character vector. Names of the indices to process
 #'@param revenueData Data frame. External revenue data (names = character vector of species names, ppp = price ($) per pound)
 #'@param convertBiomassTolbs Numeric scalar. 1 metric tonne = 2204.62 lbs (default)
+#'@param nLastYrs Numeric scalar. Number of trailing years in each run to take mean over. Default = 20 (Last 20 yrs of sim)
 #'
 #'
 #'@return A list containing the following items:
 #'\item{species_bio}{matrix (nYears x nSpecies) of median biomass (over nSims)}
 #'\item{species_catch}{matrix (nYears x nSpecies) of median catch (over nsims)}
 #'\item{guild_bio}{matrix (nYears n nGuilds) of median biomass by guild (over nsims)}
-#'\item{guild_catch}{matrix (nYears n nGuilds) of median catch by guild (over nsims)}
+#'\item{guild_catch}{matrix (nYears x nGuilds) of median catch by guild (over nsims)}
 #'\item{dfI}{data frame. Each column represents an index. Each row represent a year. see section below}
+#'\item{catch_runs}{matrix (nGuilds x nruns). Mean of the last x years of each run }
 #'
 #'@section Processing specifics:
 #'
@@ -36,7 +38,7 @@
 #'@export
 
 
-process_single_scenario <- function(modelOutput,indices,revenueData,convertBiomassTolbs=2204.62){
+process_single_scenario <- function(modelOutput,indices,revenueData,convertBiomassTolbs=2204.62,nLastYrs=20){
 
   # extract catch, convert biomass to lbs then apply price per pound to generate total revenue
   # 1 metric tonne = 2204.62 lbs
@@ -64,6 +66,11 @@ process_single_scenario <- function(modelOutput,indices,revenueData,convertBioma
   species_catch <- t(apply(catch_bio,1:2,median)) # nYrs x nSpecies
   bio <- t(apply(guild_biomass,1:2,median)) # nYrs x nGuilds
   catch <- t(apply(guild_catch,1:2,median)) # nYrs x nGuilds
+
+  ##################################### for each run over last NYEARS ##############################
+
+  guild_catch_runs <- guild_catch[,(numYrs-nLastYrs+1):numYrs,] # extract last x years
+  guild_catch_runs <- t(apply(guild_catch_runs,c(1,3),mean)) # nRuns x nGuilds
 
   ########################## index stuff ################################################
 
@@ -124,7 +131,7 @@ process_single_scenario <- function(modelOutput,indices,revenueData,convertBioma
 
 
 
-  results <- list(species_bio=species_bio, species_catch=species_catch, guild_bio=bio, guild_catch=catch,dfI=df)
+  results <- list(species_bio=species_bio, species_catch=species_catch, guild_bio=bio, guild_catch=catch,dfI=df, guild_catch_runs=guild_catch_runs)
 
   return(results)
 

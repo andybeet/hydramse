@@ -108,7 +108,9 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
     if(rule3$pass == F) { next}
 
     is <- is+1
-    save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ic,".Rda"))
+    darwinSet <- list(hydraD=hydraD, inputOptions=inputOptions, simulationRules=simulationRules)
+    saveRDS(darwinSet,file=paste0(outPath,"/success",ic,".Rds"))
+    #save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ic,".Rda"))
   }
 
 #  if (is == 10) break

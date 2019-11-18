@@ -6,7 +6,7 @@
 \usage{
 darwin(nYrs, hydraD, stockRecruitData, simulationRules, nSims,
   SRFunctionChoice, stochasticity = F, inputOptions, pathToTPL,
-  hydraVersion)
+  hydraVersion, boolPlot = F)
 }
 \arguments{
 \item{nYrs}{Numeric scalar. Total length of simulation. See \code{Run length} section below for details}
@@ -26,6 +26,8 @@ darwin(nYrs, hydraD, stockRecruitData, simulationRules, nSims,
 \item{pathToTPL}{String. Path to location of Hydra executable}
 
 \item{hydraVersion}{String. Name of the Hydra executable}
+
+\item{boolPlot.}{Boolean. True if plotting of biomass and catch are required. Default = FALSE}
 }
 \value{
 \item{nSuccesses}{Number of simulated parameter sets that pass the biomass and catch criteria. These successful sets will be saved as rds files in the \code{successfulSims}
