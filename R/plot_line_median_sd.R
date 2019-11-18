@@ -1,4 +1,4 @@
-#' creates box whisker plots
+#' creates Line plots of median value with se
 #'
 #' Multipanel plots representing species/guild biomass, catch, etc over differnt scenario types
 #'
@@ -15,7 +15,7 @@
 #'
 #' @export
 
-plot_box_whiskers <- function(filePath,rootFolder,inputFile,dataType,scaling = T,outFilename=NULL) {
+plot_line_median_sd <- function(filePath,rootFolder,inputFile,dataType,scaling = T,outFilename=NULL) {
 
   # plotting values
   chooseQuantile <- c(.1,.9)
@@ -25,13 +25,12 @@ plot_box_whiskers <- function(filePath,rootFolder,inputFile,dataType,scaling = T
 
   if (is.null(outFilename))  {
     sp <- unlist(strsplit(inputFile,".rds"))
-    outFilename <- paste0(sp[1],".png")
+    outFilename <- paste0("Line_",sp[1],".png")
     print(outFilename)
   }
 
   # load in all of the data to plot
-  data <- dplyr::as_tibble(readRDS(file = paste0(filePath,"/",rootFolder,"/",inputFile)))
-
+  data <- readRDS(file = paste0(filePath,"/",rootFolder,"/",inputFile))
   scenarioType <- unique(data$Scenario)
   for (iscenarioTypes in 1:length(scenarioType)) {
     currentScenario <- scenarioType[iscenarioTypes]
@@ -40,7 +39,7 @@ plot_box_whiskers <- function(filePath,rootFolder,inputFile,dataType,scaling = T
     scenarioData <- data %>% dplyr::filter(Scenario==currentScenario)
 
     p <- ggplot2::ggplot(data = scenarioData) +
-      ggplot2::geom_boxplot(mapping = aes(x = Exploitation, y=Value/scalingFactor)) +
+      ggplot2::geom_line(mapping = aes(x = Exploitation, y=median(Value/scalingFactor))) +
       ggplot2::facet_wrap(~Type,nrow=4,ncol=3,scales="free_y") +
       ggplot2::scale_x_discrete(labels= as.character(as.numeric(unique(scenarioData$Exploitation))/100))+
       ggplot2::theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
