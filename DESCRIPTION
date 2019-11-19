@@ -20,4 +20,4 @@ Imports:
     tidyr,
     tibble,
     plyr,
-    openxlsx
+    fmsb
