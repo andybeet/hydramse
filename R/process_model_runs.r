@@ -83,6 +83,7 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
     # splits column into two
     data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)
     data <- data %>% dplyr::mutate(Scenario=stringr::str_replace(Scenario,"Exploitation",""))
+    data$Year <- as.numeric(levels(data$Year)[data$Year])
     saveRDS(data,file=here::here(rootFolder,outputs$fileNames[iv]))
   }
 
