@@ -23,5 +23,8 @@ Plots are written
 }
 \description{
 Multipanel plots representing scenario/Exploitation rate across several
-variables used to measure ecosystem health
+variables used to measure ecosystem health.
+}
+\details{
+THIS NEEDS A REALL OVERHAUL TO GENERALIZE TO A DIFF NUMBER OF SCENARIOS EXPLOITATIONS
 }
