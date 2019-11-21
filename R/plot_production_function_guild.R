@@ -26,15 +26,14 @@ plot_production_function_guild <- function(filePath,rootFolder,dataType,scaling 
 
   # load in all of the data to plot
   if (tolower(dataType) == "biomass"){
-    data <- dplyr::as_tibble(readRDS(file = paste0(filePath,"/",rootFolder,"/guild_catch_rate.rds")))
+    data <- dplyr::as_tibble(readRDS(file = paste0(filePath,"/",rootFolder,"/guild_bio_rate.rds")))
     outFilename <- paste0("AnnualBiomassLast",nLastYrs,"_")
   } else if (tolower(dataType) == "catch") {
-    data <- dplyr::as_tibble(readRDS(file = paste0(filePath,"/",rootFolder,"/guild_bio_rate.rds")))
+    data <- dplyr::as_tibble(readRDS(file = paste0(filePath,"/",rootFolder,"/guild_catch_rate.rds")))
     outFilename <- paste0("productionFunctionLast",nLastYrs,"_")
   } else {
     stop(paste0("Not coded for dataType = ",dataType,". Only Biomass or Catch"))
   }
-  data$Year <- as.numeric(levels(data$Year)[data$Year])
 
   guildNames <- unique(data$Type)
 
