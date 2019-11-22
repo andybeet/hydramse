@@ -4,6 +4,7 @@
 #' Viable sets are saved as rds files in a predetermined folder
 #'
 #' @param nYrs Numeric scalar. Total length of simulation. See \code{Run length} section below for details
+#' @param hydraD List of current base data (as in \code{hydradata::hydradataList})
 #' @param stockRecruitData List. Stock recruitment parameter estimates for differnt functional forms (\code{\link{darwinData}})
 #' @param simulationRules List. Set of rules used in the simulation of parameters (\code{\link{darwinRules}})
 #' @param nSims Numeric scalar. Number of parameter sets to simulate
