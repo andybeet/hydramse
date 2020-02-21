@@ -43,13 +43,15 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
   ic <- 0
   is <- 0
   print("Running Darwinian process ...")
-  while(ic <= nSims) {
-    # check for existing hydra output files then removes
+  #while(ic <= nSims) {
+  while() {
+      # check for existing hydra output files then removes
     f <- list.files(outDirForDatPin,".text$")
     if (!identical(f,character(0))) {file.remove(paste0(outDirForDatPin,"/",f))}
 
     ic <- ic + 1
-    if (ic%%10 == 0){ print(paste(is,"successes in",ic,"attempts"))}
+    #if (ic%%10 == 0){ print(paste(is,"successes in",ic,"attempts"))}
+    if (ic%%10 == 0){ print(paste(ic,"attempts"))}
 
     ################### simulate set of parameters ################################
     simulatedValues <- hydramse::simulate_parameters(stockRecruitData,simulationRules,SRFunctionChoice)
@@ -114,8 +116,9 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
 
     saveRDS(darwinSet,file=paste0(outPath,"/success",ic,".Rds"))
     #save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ic,".Rda"))
+    return()
   }
 
-  return(list(nSuccesses=is,nAttempts=ic))
+#  return(list(nSuccesses=is,nAttempts=ic))
 
 }
