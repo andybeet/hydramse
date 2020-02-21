@@ -44,7 +44,7 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
   is <- 0
   print("Running Darwinian process ...")
   #while(ic <= nSims) {
-  while() {
+  while(1) {
       # check for existing hydra output files then removes
     f <- list.files(outDirForDatPin,".text$")
     if (!identical(f,character(0))) {file.remove(paste0(outDirForDatPin,"/",f))}
