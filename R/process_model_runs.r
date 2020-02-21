@@ -35,8 +35,8 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
   nScenarios <- length(outPutScenarioDirs)
 
   for (iRun in 1:nScenarios) { # total number of scenarios ran
-    st <- proc.time()
-    print(outPutScenarioDirs[iRun])
+   # st <- proc.time()
+    message(paste0("Processing run = ",outPutScenarioDirs[iRun]))
 
     filesToProcess <- list.files(paste0(outPutScenarioDirs[iRun],"/",outputType))
     # this needs to be coded in c++ to speed things up
@@ -46,7 +46,7 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
 
     # now we need to massage output and save in an RDS file
     indicesNames <- colnames(listOfStuff$dfI)
-    print(indicesNames)
+    #print(indicesNames)
     if(iRun == 1) {
       # preallocate some memory
       simNames <- as.character(1:nSims)
@@ -66,8 +66,8 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
     guild_catch[,iRun,] <- listOfStuff$guild_catch
     guild_catch_runs[,iRun,] <- listOfStuff$guild_catch_runs
 
-    en <- proc.time()
-    print((en-st)[3]/60)
+    # en <- proc.time()
+    # print((en-st)[3]/60)
   }
 
   # converts to tidy data and saves eventually pass these as argument

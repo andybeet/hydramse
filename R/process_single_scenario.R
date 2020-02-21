@@ -87,13 +87,13 @@ process_single_scenario <- function(modelOutput,indices,revenueData,convertBioma
     }
 
     if (is.null(dimSize)) {           # Indices that are not species specific, like index_Simpsons_Crecip
-      print(paste0("Processing ", indices[jindex]))
+      #print(paste0("Processing ", indices[jindex]))
       flattenData <- simplify2array(variableData)
       dataMedQuant <- apply(flattenData,1,quantile,probs=.5,na.rm=TRUE)
       meanIndex <- dataMedQuant
 
     } else if (dimSize == numSpecies){ # Species specific
-      print(paste0("Processing ", indices[jindex]))
+      #print(paste0("Processing ", indices[jindex]))
       flattenData <- simplify2array(variableData)
 
       if (indices[jindex] == "index_status_species") { # Species status
@@ -105,7 +105,7 @@ process_single_scenario <- function(modelOutput,indices,revenueData,convertBioma
       }
 
     } else if (dimSize == numGuilds) { # guild specific
-      print(paste0("Processing ", indices[jindex]))
+      #print(paste0("Processing ", indices[jindex]))
       flattenData <- simplify2array(variableData)
       meanIndex <- as.vector(apply(flattenData,2,sum)) # sums over all 10 species and run combination to get yearly value
       #numGuildBelow <- apply(flattenData,1:2,sum) # sums over all 100 runs for species and run combination. Total numer times

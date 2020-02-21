@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The lazily loaded data set `darwinData` contains model parameter estimates of a variety of differnt stock recruitment. The underlying Stock-recruitment data was taken from a variety of different studies (multispecies studies where possible). The field "owner" indicates the source of the study and the "filename" is the name of the file containing the data. The other fields represnt the estimated model parameters. All parameters were estimated using maximum likelihood. The likelihood function are written below each section.
+The lazily loaded data set `darwinData` contains model parameter estimates of a variety of different stock-recruitment models. The underlying Stock-recruitment data was taken from a variety of different studies (multispecies studies where possible). The field "owner" indicates the source of the study and the "filename" is the name of the file containing the data. The other fields represent the estimated model parameters. All parameters were estimated using maximum likelihood. The likelihood function are written below each section.
 
 ## Hockey Stick model
 

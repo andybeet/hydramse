@@ -15,9 +15,10 @@
 #' @param hydraVersion String. Name of the Hydra executable
 #' @param boolPlot. Boolean. True if plotting of biomass and catch are required. Default = FALSE
 #'
-#' @return
+#' @return List
 #' \item{nSuccesses}{Number of simulated parameter sets that pass the biomass and catch criteria. These successful sets will be saved as rds files in the \code{successfulSims}
 #' folder, located in the project root}
+#' \item{nAttempts}{Total Number of simulated parameter sets}
 #'
 #' @section Run length:
 #'
@@ -110,11 +111,11 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
 
     is <- is+1
     darwinSet <- list(hydraD=hydraD, inputOptions=inputOptions, simulationRules=simulationRules)
+
     saveRDS(darwinSet,file=paste0(outPath,"/success",ic,".Rds"))
     #save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ic,".Rda"))
   }
 
-#  if (is == 10) break
-  return(is)
+  return(list(nSuccesses=is,nAttempts=ic))
 
 }
