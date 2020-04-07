@@ -42,7 +42,7 @@ process_darwin_output<- function(filePath,speciesList){
   rownames(biomass) <- speciesList
   colnames(biomass) <- c(1:nYrs)
   biomass <- tibble::rownames_to_column(as.data.frame(biomass))
-  biomass <- tidyr::gather(biomass,Year,Biomass, -rowname)
+  biomass <- tidyr::pivot_longer(biomass,names_to="Year",values_to="Biomass", -rowname)
   biomass$Year <- as.numeric(biomass$Year)
   names(biomass)[1] <- "Species"
 
@@ -56,7 +56,7 @@ process_darwin_output<- function(filePath,speciesList){
   rownames(catch) <- speciesList
   colnames(catch) <- c(1:nYrs)
   catch <- tibble::rownames_to_column(as.data.frame(catch))
-  catch <- tidyr::gather(catch,Year,Catch, -rowname)
+  catch <- tidyr::pivot_longer(catch,names_to="Year",values_to="Catch", -rowname)
   catch$Year <- as.numeric(catch$Year)
   names(catch)[1] <- "Species"
 
