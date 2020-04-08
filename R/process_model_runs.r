@@ -77,7 +77,7 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
     data <- get(as.character(outputs$variableNames[iv])) # return the value of data
     colHeaders <- dimnames(data)$index
     data <- plyr::adply(data,c(1,2)) # converts array to dataframe
-    #data <- reshape2::melt(data)
+
     data <- tidyr::gather(data,key="Type",value="Value",colHeaders) # tidyfies data
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
     # splits column into two
