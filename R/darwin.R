@@ -114,9 +114,10 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
     is <- is+1
     darwinSet <- list(hydraD=hydraD, inputOptions=inputOptions, simulationRules=simulationRules)
 
-    saveRDS(darwinSet,file=paste0(outPath,"/success",ic,".Rds"))
-    #save(hydraD,inputOptions,simulationRules,file=paste0(outPath,"/success",ic,".Rda"))
-    return()
+    saveRDS(darwinSet,file=paste0(outPath,"/success",Sys.Date(),"_",runif(1),".Rds"))
+    message(paste0("Found ",is," of ", nSims," viable parameter sets "))
+    if(is == nSims) return()
+
   }
 
 #  return(list(nSuccesses=is,nAttempts=ic))
