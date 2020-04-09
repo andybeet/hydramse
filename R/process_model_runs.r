@@ -34,6 +34,7 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
 
   nScenarios <- length(outPutScenarioDirs)
 
+
   for (iRun in 1:nScenarios) { # total number of scenarios ran
    # st <- proc.time()
     message(paste0("Processing run = ",outPutScenarioDirs[iRun]))
@@ -78,7 +79,8 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
     colHeaders <- dimnames(data)$index
     data <- plyr::adply(data,c(1,2)) # converts array to dataframe
 
-    data <- tidyr::gather(data,key="Type",value="Value",colHeaders) # tidyfies data
+    tidyr::pivot_longer(data,colHeaders,names_to = "Type",values_to = "Value") # tidyfies data
+
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
     # splits column into two
     data <- tidyr::separate(data,ScenarioFolderName,into=c("Scenario","Exploitation"),-2)
