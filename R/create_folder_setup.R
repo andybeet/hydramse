@@ -7,6 +7,7 @@
 #'@param hcrTypes Character vector: Names for the harvest control rule types (Default = c("Fixed, "Ramp"))
 #'@param hcrLevels Character vector: Names for the levels that the harvest control rules are applied to. (Default = c("Complex","HTSpecies","LTSpecies"))
 #'@param exploitationRates Numeric vector: Values for the maximum exploitation rate in any scenario.
+#'@param create Boolean. To create folders on machine (TRUE), to retrun structure only (F)
 #'
 #'@return A Character matrix (3 columns):
 #'
@@ -17,22 +18,25 @@
 #'@export
 
 
-create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=c("Complex","HTSpecies","LTSpecies"),exploitationRates) {
+create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=c("Complex","HTSpecies","LTSpecies"),exploitationRates,create=T) {
 
   # checks to see if folders are set up for an assessment/MSE
-  if (!dir.exists(rootFolder)) {
-    dir.create(rootFolder)
-  } else {
-    stop(paste0("Root folder ",rootFolder, " already exists"))
+  if (create) {
+    if (!dir.exists(rootFolder)) {
+      dir.create(rootFolder)
+    } else {
+      stop(paste0("Root folder ",rootFolder, " already exists"))
+    }
+
+    # create kraken folder
+    if (!dir.exists(paste0(rootFolder,"/krakenInputs/"))) {
+      dir.create(paste0(rootFolder,"/krakenInputs/"),recursive = TRUE)
+    }
+    if (!dir.exists(paste0(rootFolder,"/crashed/"))) {
+      dir.create(paste0(rootFolder,"/crashed/"),recursive = TRUE)
+    }
   }
 
-  # create kraken folder
-  if (!dir.exists(paste0(rootFolder,"/krakenInputs/"))) {
-    dir.create(paste0(rootFolder,"/krakenInputs/"),recursive = TRUE)
-  }
-  if (!dir.exists(paste0(rootFolder,"/crashed/"))) {
-    dir.create(paste0(rootFolder,"/crashed/"),recursive = TRUE)
-  }
   folderStructure <- NULL
   # create plottingData folder to hold summary stats and plots withing scenarioType subfolders
   for (iType in 1:length(hcrTypes)) {
@@ -40,8 +44,10 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
       plottingFolderName <- paste0(hcrTypes[iType],hcrLevels[iRule])
 
       # creates the folders inside the plotting data folder
-      if (!dir.exists(paste0(rootFolder,"/plottingData/",plottingFolderName))) {
-        dir.create(paste0(rootFolder,"/plottingData/",plottingFolderName),recursive = TRUE)
+      if (create) {
+        if (!dir.exists(paste0(rootFolder,"/plottingData/",plottingFolderName))) {
+          dir.create(paste0(rootFolder,"/plottingData/",plottingFolderName),recursive = TRUE)
+        }
       }
       v <- c(hcrTypes[iType],hcrLevels[iRule])
       # creates individual folders for each exploitation/scenario combo
@@ -54,15 +60,18 @@ create_folder_setup <- function(rootFolder,hcrTypes=c("Fixed","Ramp"),hcrLevels=
           folderStructure <- rbind(folderStructure,c(v,exploitationRates[iRate]))
 
         }
-        if (!dir.exists(paste0(rootFolder,"/",folderName))) {
-          dir.create(paste0(rootFolder,"/",folderName),recursive = TRUE)
-        }
-        # inside these folders create subfolders to hold model output files
-        if (!dir.exists(paste0(rootFolder,"/",folderName,"/indices"))) {
-          dir.create(paste0(rootFolder,"/",folderName,"/indices"),recursive = TRUE)
-        }
-        if (!dir.exists(paste0(rootFolder,"/",folderName,"/diagnostics"))) {
-          dir.create(paste0(rootFolder,"/",folderName,"/diagnostics"),recursive = TRUE)
+
+        if (create) {
+          if (!dir.exists(paste0(rootFolder,"/",folderName))) {
+            dir.create(paste0(rootFolder,"/",folderName),recursive = TRUE)
+          }
+          # inside these folders create subfolders to hold model output files
+          if (!dir.exists(paste0(rootFolder,"/",folderName,"/indices"))) {
+            dir.create(paste0(rootFolder,"/",folderName,"/indices"),recursive = TRUE)
+          }
+          if (!dir.exists(paste0(rootFolder,"/",folderName,"/diagnostics"))) {
+            dir.create(paste0(rootFolder,"/",folderName,"/diagnostics"),recursive = TRUE)
+          }
         }
 
       }
