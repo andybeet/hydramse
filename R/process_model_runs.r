@@ -7,7 +7,7 @@
 #'@param indices Character vector. The names of the indices of interest from the model run.
 #'@param scenarios Character vector. The names of the scenario. Defined as a harvest control rul with a max exploitation rate
 #'@param rootFolder root folder holding all run info
-#'@param outPutScenarioDirs list of scenario directories under the rootFolder
+#'@param outputScenarioDirs list of scenario directories under the rootFolder
 #'@param revenueData Data frame (see \code{\link{process_single_scenario}})
 #'@param outputType Character string. Name of folder where Hydra output files are stored ("indices","diagnostics")
 #'@param nLastYrs Numeric scalar. Number of trailing years in each run to take mean over. Default = 20 (Last 20 yrs of sim)
@@ -25,23 +25,23 @@
 #'@export
 
 
-process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioDirs,revenueData,outputType="indices",nLastYrs){
+process_model_runs <- function(data,indices,scenarios,rootFolder,outputScenarioDirs,revenueData,outputType="indices",nLastYrs){
 
   speciesNames <- data$speciesList
   guildNames <- unique(data$guildNames)
-  scenarioDirNames <- apply(as.matrix(outPutScenarioDirs),1,function(x) tail(unlist(strsplit(x,"/")),1))
+  scenarioDirNames <- apply(as.matrix(outputScenarioDirs),1,function(x) tail(unlist(strsplit(x,"/")),1))
   yrNames <- as.character(1:data$Nyrs)
 
-  nScenarios <- length(outPutScenarioDirs)
+  nScenarios <- length(outputScenarioDirs)
 
 
   for (iRun in 1:nScenarios) { # total number of scenarios ran
    # st <- proc.time()
-    message(paste0("Processing run = ",outPutScenarioDirs[iRun]))
+    message(paste0("Processing run = ",outputScenarioDirs[iRun]))
 
-    filesToProcess <- list.files(paste0(outPutScenarioDirs[iRun],"/",outputType))
+    filesToProcess <- list.files(paste0(outputScenarioDirs[iRun],"/",outputType))
     # this needs to be coded in c++ to speed things up
-    modelOutput <- lapply(paste0(outPutScenarioDirs[iRun],"/",outputType,"/",filesToProcess),file_to_Rlist)
+    modelOutput <- lapply(paste0(outputScenarioDirs[iRun],"/",outputType,"/",filesToProcess),file_to_Rlist)
     nSims <- length(modelOutput)
     listOfStuff <- process_single_scenario(modelOutput,indices,revenueData,nLastYrs=nLastYrs)
 
@@ -79,7 +79,7 @@ process_model_runs <- function(data,indices,scenarios,rootFolder,outPutScenarioD
     colHeaders <- dimnames(data)$index
     data <- plyr::adply(data,c(1,2)) # converts array to dataframe
 
-    tidyr::pivot_longer(data,colHeaders,names_to = "Type",values_to = "Value") # tidyfies data
+    data <- tidyr::pivot_longer(data,colHeaders,names_to = "Type",values_to = "Value") # tidyfies data
 
     colnames(data) <- c("Year","ScenarioFolderName","Type","Value")
     # splits column into two
