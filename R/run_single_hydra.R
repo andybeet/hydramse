@@ -20,7 +20,7 @@ run_single_hydra <- function(n=1,exePath,datPath,pinPath) {
   # form string to execute
   runmod<-paste(exePath,"-sim",n," -ind",datPath," -ainp ",pinPath)  # creates string to be run in shell
   # execute string capture output as R object
-  system(runmod,intern=T)
+  out <- system(runmod,intern=T)
 
 
   #system("rm variance fmin.log eigv.rpt") #clean up
