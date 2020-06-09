@@ -4,7 +4,8 @@
 \name{darwinRules}
 \alias{darwinRules}
 \title{Data rules used in Darwin simulation study}
-\format{A list containing 6 elements
+\format{
+A list containing 6 elements
 \describe{
   \item{catchRule}{Boolean. Decision to implement Catch rule. default = T}
   \item{biomassRule}{Boolean. Decision to implement Biomas rules. Default = T}
@@ -16,7 +17,8 @@
   \item{BHRangeOfAlphas}{Numeric vector. Proportions (upper and lower) of the \code{alpha} parameter for the Beverton holt stock recruitment function}
   \item{SRType}{Numeric vector. Determins overcompensatory behavior (species specific). Values of 1 (compensatory) or 2 (overcompensatory)}
   \item{otherFood}{Numeric vector. Discrete set of other food values used to simulate from}
-}}
+}
+}
 \usage{
 darwinRules
 }

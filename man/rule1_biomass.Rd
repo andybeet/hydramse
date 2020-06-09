@@ -4,8 +4,13 @@
 \alias{rule1_biomass}
 \title{Assess if model passes 1st biomass rule}
 \usage{
-rule1_biomass(biomass, nYrsFishing, historicBounds, simulationRules,
-  speciesList)
+rule1_biomass(
+  biomass,
+  nYrsFishing,
+  historicBounds,
+  simulationRules,
+  speciesList
+)
 }
 \arguments{
 \item{biomass}{matrix. (nSpecies x nYrs) average biomass (avByr variable)}

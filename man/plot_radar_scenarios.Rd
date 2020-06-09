@@ -4,8 +4,7 @@
 \alias{plot_radar_scenarios}
 \title{creates Radar plots for scenario comparison}
 \usage{
-plot_radar_scenarios(filePath, rootFolder, inputFile, timePeriod,
-  indicesNames)
+plot_radar_scenarios(filePath, rootFolder, inputFile, timePeriod, indicesNames)
 }
 \arguments{
 \item{filePath}{Character string. Path to rootfolder}

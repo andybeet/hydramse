@@ -4,8 +4,11 @@
 \alias{simulate_parameters}
 \title{simulate all unknowns in the MSE}
 \usage{
-simulate_parameters(stockRecruitParams = darwinData,
-  simulationRules = darwinRules, SRFunctionChoice = NULL)
+simulate_parameters(
+  stockRecruitParams = darwinData,
+  simulationRules = darwinRules,
+  SRFunctionChoice = NULL
+)
 }
 \arguments{
 \item{stockRecruitParams}{Data set similar to lazily loaded darwinData dataset}

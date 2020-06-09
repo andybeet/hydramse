@@ -4,8 +4,14 @@
 \alias{plot_line_median_sd}
 \title{creates Line plots of median value with se}
 \usage{
-plot_line_median_sd(filePath, rootFolder, inputFile, dataType,
-  scaling = T, outFilename = NULL)
+plot_line_median_sd(
+  filePath,
+  rootFolder,
+  inputFile,
+  dataType,
+  scaling = T,
+  outFilename = NULL
+)
 }
 \arguments{
 \item{filePath}{Character string. Path to rootfolder}

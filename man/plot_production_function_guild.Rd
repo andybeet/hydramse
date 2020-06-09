@@ -4,8 +4,13 @@
 \alias{plot_production_function_guild}
 \title{plots production functions}
 \usage{
-plot_production_function_guild(filePath, rootFolder, dataType,
-  scaling = T, nLastYrs = 20)
+plot_production_function_guild(
+  filePath,
+  rootFolder,
+  dataType,
+  scaling = T,
+  nLastYrs = 20
+)
 }
 \arguments{
 \item{filePath}{Character string. Path to rootfolder}

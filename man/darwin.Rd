@@ -4,12 +4,24 @@
 \alias{darwin}
 \title{Darwinian simulation study}
 \usage{
-darwin(nYrs, hydraD, stockRecruitData, simulationRules, nSims,
-  SRFunctionChoice, stochasticity = F, inputOptions, pathToTPL,
-  hydraVersion, boolPlot = F)
+darwin(
+  nYrs,
+  hydraD,
+  stockRecruitData,
+  simulationRules,
+  nSims,
+  SRFunctionChoice,
+  stochasticity = F,
+  inputOptions,
+  pathToTPL,
+  hydraVersion,
+  boolPlot = F
+)
 }
 \arguments{
 \item{nYrs}{Numeric scalar. Total length of simulation. See \code{Run length} section below for details}
+
+\item{hydraD}{List of current base data (as in \code{hydradata::hydradataList})}
 
 \item{stockRecruitData}{List. Stock recruitment parameter estimates for differnt functional forms (\code{\link{darwinData}})}
 
@@ -30,8 +42,10 @@ darwin(nYrs, hydraD, stockRecruitData, simulationRules, nSims,
 \item{boolPlot.}{Boolean. True if plotting of biomass and catch are required. Default = FALSE}
 }
 \value{
+List
 \item{nSuccesses}{Number of simulated parameter sets that pass the biomass and catch criteria. These successful sets will be saved as rds files in the \code{successfulSims}
 folder, located in the project root}
+\item{nAttempts}{Total Number of simulated parameter sets}
 }
 \description{
 Simulates parameters, runs hydra, then determins if simulated parameter set is viable. Essentially filtering out poor simulations

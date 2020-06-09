@@ -4,8 +4,13 @@
 \alias{process_single_scenario}
 \title{Process all runs for a given scenario}
 \usage{
-process_single_scenario(modelOutput, indices, revenueData,
-  convertBiomassTolbs = 2204.62, nLastYrs = 20)
+process_single_scenario(
+  modelOutput,
+  indices,
+  revenueData,
+  convertBiomassTolbs = 2204.62,
+  nLastYrs = 20
+)
 }
 \arguments{
 \item{modelOutput}{List (length = nSims) content of files created by running Hydra}

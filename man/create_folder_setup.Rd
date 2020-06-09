@@ -4,8 +4,13 @@
 \alias{create_folder_setup}
 \title{create folders structure to hold model output.}
 \usage{
-create_folder_setup(rootFolder, hcrTypes = c("Fixed", "Ramp"),
-  hcrLevels = c("Complex", "HTSpecies", "LTSpecies"), exploitationRates)
+create_folder_setup(
+  rootFolder,
+  hcrTypes = c("Fixed", "Ramp"),
+  hcrLevels = c("Complex", "HTSpecies", "LTSpecies"),
+  exploitationRates,
+  create = T
+)
 }
 \arguments{
 \item{rootFolder}{Character string: name of folder to hold all output from a single set of parameters}
@@ -15,6 +20,8 @@ create_folder_setup(rootFolder, hcrTypes = c("Fixed", "Ramp"),
 \item{hcrLevels}{Character vector: Names for the levels that the harvest control rules are applied to. (Default = c("Complex","HTSpecies","LTSpecies"))}
 
 \item{exploitationRates}{Numeric vector: Values for the maximum exploitation rate in any scenario.}
+
+\item{create}{Boolean. To create folders on machine (TRUE), to retrun structure only (F)}
 }
 \value{
 A Character matrix (3 columns):

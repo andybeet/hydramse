@@ -4,8 +4,14 @@
 \alias{plot_box_whiskers}
 \title{creates box whisker plots}
 \usage{
-plot_box_whiskers(filePath, rootFolder, inputFile, dataType, scaling = T,
-  outFilename = NULL)
+plot_box_whiskers(
+  filePath,
+  rootFolder,
+  inputFile,
+  dataType,
+  scaling = T,
+  outFilename = NULL
+)
 }
 \arguments{
 \item{filePath}{Character string. Path to rootfolder}
