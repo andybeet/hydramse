@@ -4,7 +4,7 @@
 #'
 #'@param rootFolder Character string: name of folder to hold all output from a single set of parameters
 #'@param fleetsNames Character vector: Names of the fleets in the model
-#'@param exploitationRates Numeric vector: Values for the maximum exploitation rate in any scenario.
+#'@param exploitationRates Numeric matrix: Values for the exploitation rates for each fleet. Eg. Column 1 would be the values of exploitation rates from min to max for fllet 1, column 2 for fleet 2, etc.
 #'@param create Boolean. To create folders on machine (TRUE), to retrun structure only (F)
 #'
 #'@return A Character matrix (3 columns):
@@ -36,14 +36,19 @@ create_effort_folder_setup <- function(rootFolder,fleetNames,exploitationRates,c
   }
 
   nFleets <- length(fleetNames)
-  string <- paste0("expand.grid(",paste0(rep("exploitationRates",nFleets),collapse = ","),")")
-  folderCombinations <- eval(parse(text=string))
+
+  exploitationRates <- as.list(as.data.frame(exploitationRates))
+  folderCombinations <- expand.grid(exploitationRates)
+
+  #string <- paste0("expand.grid(",paste0(rep("exploitationRates",nFleets),collapse = ","),")")
+  #folderCombinations <- eval(parse(text=string))
   # combinations
   folderStructure <- NULL
   # create all folders
   for (ifolder in 1:nrow(folderCombinations)) {
     rates <- as.numeric(folderCombinations[ifolder,])
-    rates <- paste0("_",sprintf("%02d",rates))
+#    rates <- paste0("_",sprintf("%02d",rates))
+    rates <- paste0("_",rates)
     folderName <- paste0(fleetNames,rates,collapse="_")
     folderStructure <- rbind(folderStructure,folderName)
 
