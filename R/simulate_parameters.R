@@ -2,6 +2,7 @@
 #'
 #' Currently only simulate stock recruitment parameters and other food. See Method section below for more details
 #'
+#' @param seed Integer. Set seed for testing or reproducability. Default = NULL
 #' @param stockRecruitParams Data set similar to lazily loaded darwinData dataset
 #' @param simulationRules Set of rules set up similar to lazily loaded darwinRules dataset
 #' @param SRFunctionChoice Numeric Vector. Whether the Stock recruitment function for each species should be piecewise model (hockey, generalized,=  0) or shepherd (1) or a random choice of either (Default = NULL)
@@ -26,7 +27,12 @@
 #'
 #' @export
 
-simulate_parameters <- function(stockRecruitParams=darwinData,simulationRules=darwinRules,SRFunctionChoice=NULL){
+simulate_parameters <- function(seed=NULL,stockRecruitParams=darwinData,simulationRules=darwinRules,SRFunctionChoice=NULL){
+
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+
   nSpecies <- length(simulationRules$SRType)
   simulatedValues <- list()
   simValues <- list()

@@ -3,6 +3,7 @@
 #' Simulates parameters, runs hydra, then determins if simulated parameter set is viable. Essentially filtering out poor simulations
 #' Viable sets are saved as rds files in a predetermined folder
 #'
+#' @param seed Integer. Set seed for testing or reproducability. Default = NULL
 #' @param nYrs Numeric scalar. Total length of simulation. See \code{Run length} section below for details
 #' @param hydraD List of current base data (as in \code{hydradata::hydradataList})
 #' @param stockRecruitData List. Stock recruitment parameter estimates for differnt functional forms (\code{\link{darwinData}})
@@ -28,7 +29,7 @@
 #'
 #' @export
 
-darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion,boolPlot=F){
+darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion,boolPlot=F){
   # create folders for storing temporary files and saved output
   nYrsFishing <- hydradata::hydraDataList$Nyrs
   outDirForDatPin <- here::here("darwin")
@@ -45,7 +46,7 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
   print("Running Darwinian process ...")
   #while(ic <= nSims) {
   while(1) {
-      # check for existing hydra output files then removes
+    # check for existing hydra output files then removes
     f <- list.files(outDirForDatPin,".text$")
     if (!identical(f,character(0))) {file.remove(paste0(outDirForDatPin,"/",f))}
 
@@ -54,7 +55,7 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
     if (ic%%10 == 0){ print(paste(ic,"attempts"))}
 
     ################### simulate set of parameters ################################
-    simulatedValues <- hydramse::simulate_parameters(stockRecruitData,simulationRules,SRFunctionChoice)
+    simulatedValues <- hydramse::simulate_parameters(seed,stockRecruitData,simulationRules,SRFunctionChoice)
 
     # combine with extended time series for darwinian use
     #simulatedValues <- c(simulatedValues,noFishingData)
@@ -88,6 +89,7 @@ darwin <- function(nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunction
     # Check to see if set of parameters are good
     # read in output from model and summarize it
     output <- hydramse::process_darwin_output(outDirForDatPin,speciesList=hydraD$speciesList)
+    #return(output)
     biomass <- output$biomass
     catch <- output$catch
     if (boolPlot == T) {
