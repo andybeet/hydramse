@@ -1,8 +1,8 @@
 ---
-title: "Lazy Data from darwinian study "
+title: "Lazy Data from Darwinian study"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Lazy Data from darwinian study }
+  %\VignetteIndexEntry{Lazy Data from Darwinian study}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
