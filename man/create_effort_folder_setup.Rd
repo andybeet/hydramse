@@ -14,7 +14,7 @@ create_effort_folder_setup(
 \arguments{
 \item{rootFolder}{Character string: name of folder to hold all output from a single set of parameters}
 
-\item{exploitationRates}{Numeric vector: Values for the maximum exploitation rate in any scenario.}
+\item{exploitationRates}{Numeric matrix: Values for the exploitation rates for each fleet. Eg. Column 1 would be the values of exploitation rates from min to max for fllet 1, column 2 for fleet 2, etc.}
 
 \item{create}{Boolean. To create folders on machine (TRUE), to retrun structure only (F)}
 

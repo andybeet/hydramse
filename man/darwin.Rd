@@ -5,6 +5,7 @@
 \title{Darwinian simulation study}
 \usage{
 darwin(
+  seed = NULL,
   nYrs,
   hydraD,
   stockRecruitData,
@@ -19,6 +20,8 @@ darwin(
 )
 }
 \arguments{
+\item{seed}{Integer. Set seed for testing or reproducability. Default = NULL}
+
 \item{nYrs}{Numeric scalar. Total length of simulation. See \code{Run length} section below for details}
 
 \item{hydraD}{List of current base data (as in \code{hydradata::hydradataList})}

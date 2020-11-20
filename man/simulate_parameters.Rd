@@ -5,12 +5,15 @@
 \title{simulate all unknowns in the MSE}
 \usage{
 simulate_parameters(
+  seed = NULL,
   stockRecruitParams = darwinData,
   simulationRules = darwinRules,
   SRFunctionChoice = NULL
 )
 }
 \arguments{
+\item{seed}{Integer. Set seed for testing or reproducability. Default = NULL}
+
 \item{stockRecruitParams}{Data set similar to lazily loaded darwinData dataset}
 
 \item{simulationRules}{Set of rules set up similar to lazily loaded darwinRules dataset}
