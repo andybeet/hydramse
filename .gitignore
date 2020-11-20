@@ -6,7 +6,6 @@ inst/doc
 
 # other folders
 other
-data-raw
 *.txt
 #vignette files
 vignettes/*.html
