@@ -1,7 +1,7 @@
 # Read in the initial sets of parameter estimates from fitting to data
 # these reside in xlx files. Exported as rdata files for lazy loading
 
-create_darwinData <- function(){
+create_darwinData <- function(overwrite=F){
   filePath <- "data-raw"
   # reads in survey biomass and and commercial catch(landings + discard) data.
   # Also read in Kiersten curtis biomass estimates
@@ -42,7 +42,7 @@ create_darwinData <- function(){
   darwinData$historicBounds <- startingRules
 
   # export darwin data
-  usethis::use_data(darwinData,overwrite = TRUE)
+  usethis::use_data(darwinData,overwrite = overwrite)
 
   # export time series of survey and landings
   survey <- readxl::read_xlsx(here::here(filePath,"surv_land_disc_Beet.xlsx"),sheet="survey",range="B1:L50",col_names=TRUE) %>%
@@ -68,7 +68,7 @@ create_darwinData <- function(){
   timeSeries <- rbind(landings,survey,discards)
 
   #
-  usethis::use_data(timeSeries,overwrite = TRUE)
+  usethis::use_data(timeSeries,overwrite = overwrite)
 
 }
 

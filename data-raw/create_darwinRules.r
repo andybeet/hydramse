@@ -1,6 +1,6 @@
 
   # sets up default rules for the darwin simulation study and exports as lazy data
-create_darwinRules <- function(){
+create_darwinRules <- function(overwrite=F){
     # rule choices made by scientist
   darwinRules <- list()
     darwinRules$catchRule <- T
@@ -14,7 +14,7 @@ create_darwinRules <- function(){
     darwinRules$SRType <- c(2,2,1,2,1,1,1,1,2,2) # 1 = asymptote , 2 = overcompensation
     darwinRules$otherFood <- seq(10000,60000,5000)
 
-    devtools::use_data(darwinRules,overwrite = TRUE)
+    usethis::use_data(darwinRules,overwrite = overwrite)
 
 }
 

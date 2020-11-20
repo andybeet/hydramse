@@ -20,4 +20,5 @@ Imports:
     tidyr,
     tibble,
     plyr,
-    fmsb
+    fmsb,
+    ggplot2
