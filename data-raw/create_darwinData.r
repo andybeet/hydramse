@@ -47,17 +47,17 @@ create_darwinData <- function(overwrite=F){
   # export time series of survey and landings
   survey <- readxl::read_xlsx(here::here(filePath,"surv_land_disc_Beet.xlsx"),sheet="survey",range="B1:L50",col_names=TRUE) %>%
     tidyr::pivot_longer(.,cols=-YEAR,names_to = "SPECIES",values_to = "VALUE") %>%
-    dplyr::mutate(value=value*surveyconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
+    dplyr::mutate(VALUE=VALUE*surveyconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
     dplyr::mutate(TYPE = "survey")
 
   landings <- readxl::read_xlsx(here::here(filePath,"surv_land_disc_Beet.xlsx"),sheet="landings",range="B1:L56",col_names=TRUE) %>%
     tidyr::pivot_longer(.,cols=-YEAR,names_to = "SPECIES",values_to = "VALUE") %>%
-    dplyr::mutate(value=value*catchconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
+    dplyr::mutate(VALUE=VALUE*catchconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
     dplyr::mutate(TYPE = "landings")
 
   discards <- readxl::read_xlsx(here::here(filePath,"surv_land_disc_Beet.xlsx"),sheet="landings",range="B1:L56",col_names=TRUE) %>%
     tidyr::pivot_longer(.,cols=-YEAR,names_to = "SPECIES",values_to = "VALUE") %>%
-    dplyr::mutate(value=value*catchconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
+    dplyr::mutate(VALUE=VALUE*catchconversionToMetricTonnes,SPECIES=as.factor(SPECIES)) %>%
     dplyr::mutate(TYPE = "discards")
 
   yrs <- unique(c(unique(discards$YEAR),unique(survey$YEAR),unique(landings$YEAR)))
@@ -67,7 +67,7 @@ create_darwinData <- function(overwrite=F){
 
   timeSeries <- rbind(landings,survey,discards)
 
-  #
+  # write timeSeries data to data folder
   usethis::use_data(timeSeries,overwrite = overwrite)
 
 }
