@@ -4,8 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("Andy", "Beet", email = "andrew.beet@noaa.gov", role = c("aut", "cre"))
 Description: Creates file/folder structure for MSE, performs an MSE, and displays output.
 Depends: R (>= 3.5.1)
-License: What license is it under?
-Encoding: UTF-8
+License: file LICENSE
 LazyData: true
 RoxygenNote: 7.1.0
 Suggests: knitr,
