@@ -1,6 +1,6 @@
 # hydramse
 
-![gitleaks](https://github.com/NOAA-EDAB/LeMANS/workflows/gitleaks/badge.svg)
+![gitleaks](https://github.com/andybeet/hydramse/workflows/gitleaks/badge.svg)
 
 
 STILL IN DEVELOPMENT
