@@ -1,6 +1,6 @@
 #' Darwinian simulation study
 #'
-#' Simulates parameters, runs hydra, then determins if simulated parameter set is viable. Essentially filtering out poor simulations
+#' Simulates parameters, runs hydra, then determines if simulated parameter set is viable. Essentially filtering out poor simulations
 #' Viable sets are saved as rds files in a predetermined folder
 #'
 #' @param seed Integer. Set seed for testing or reproducability. Default = NULL
@@ -10,8 +10,8 @@
 #' @param simulationRules List. Set of rules used in the simulation of parameters (\code{\link{darwinRules}})
 #' @param nSims Numeric scalar. Number of parameter sets to simulate
 #' @param SRFunctionChoice Numeric Vector. An argument of \code{\link{simulate_parameters}}
-#' @param stochasticity Boolean scalar. TRUE if stochasiticity is desired (stock recruitment functions in Hydra)
-#' @param inputOptions List. Set of input values to determin run type
+#' @param stochasticity Boolean scalar. TRUE if stochasticity is desired (stock recruitment functions in Hydra)
+#' @param inputOptions List. Set of input values to determine run type
 #' @param pathToTPL String. Path to location of Hydra executable
 #' @param hydraVersion String. Name of the Hydra executable
 #' @param boolPlot. Boolean. True if plotting of biomass and catch are required. Default = FALSE
@@ -25,17 +25,22 @@
 #'
 #' Hydra is currently set up to run for 53 years (1964-2016). This is the historic period in which fishing data is available. To extend the run length to \code{nYrs}
 #' is adding a period of no fishing of length \code{nYrs}-53 years to the start of the model run. It is assumed that all populations have reached
-#' an equilibrium. This equilibrium is then used as the starting point for the histric portion of the model run.
+#' an equilibrium. This equilibrium is then used as the starting point for the historic portion of the model run.
 #'
 #' @export
 
 darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion,boolPlot=F){
+
+  # create a log file for rule failures
+  logPath <- logr::log_open(paste0(inputOptions$outDir,"test.log"))
+
   # create folders for storing temporary files and saved output
   nYrsFishing <- hydradata::hydraDataList$Nyrs
   outDirForDatPin <- here::here("darwin")
   outPath <- here::here("successfulSims")
   if(!dir.exists(outDirForDatPin)){dir.create(outDirForDatPin)} # folder for dumping hydra output prior to analysis
   if(!dir.exists(outPath)){dir.create(outPath)} # folder for dumping hydra output prior to analysis
+
 
   # create extended time series info for study longer than 53 yrs.
   # We need to include a nofishing scenario prior to fishing
@@ -44,6 +49,7 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
   ic <- 0
   is <- 0
   print("Running Darwinian process ...")
+  message(paste0("Creating dat and pin files in: ",outDirForDatPin))
   #while(ic <= nSims) {
   while(1) {
     # check for existing hydra output files then removes
@@ -68,6 +74,7 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     inputOptions$outDir <- outDirForDatPin
     inputOptions$scenarioFlag <-  "darwin"
 
+
     hydraD <- hydradata::create_datpin_files(inputOptions,hydraD) # creates dat and pin file
 
     #########################################################################
@@ -76,6 +83,7 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     datPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".dat")
     pinPath <- paste0(outDirForDatPin,"/",inputOptions$outputFilename,".pin")
     exePath <- paste(pathToTPL,hydraVersion,sep="/")
+
     hydramse::run_single_hydra(exePath=exePath,datPath=datPath,pinPath=pinPath)
 
 
@@ -99,7 +107,7 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
 
     # Do these simulations satisfy the rules
     ################################## No Fishing Biomass Rule ########################
-    # biomass after nYrsNofishing years - should reach equilibriums - > lowest SSB seen
+    # biomass after nYrsNofishing years - should reach equilibria - > lowest SSB seen
     # use mean of last 10 years
     rule1 <- hydramse::rule1_biomass(biomass,nYrsFishing,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
     if(rule1$pass == F) { next} # these parameter values are garbage. Simulate next set
@@ -121,6 +129,8 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     if(is == nSims) return()
 
   }
+
+  logr::log_close()
 
 #  return(list(nSuccesses=is,nAttempts=ic))
 

@@ -34,9 +34,9 @@ darwin(
 
 \item{SRFunctionChoice}{Numeric Vector. An argument of \code{\link{simulate_parameters}}}
 
-\item{stochasticity}{Boolean scalar. TRUE if stochasiticity is desired (stock recruitment functions in Hydra)}
+\item{stochasticity}{Boolean scalar. TRUE if stochasticity is desired (stock recruitment functions in Hydra)}
 
-\item{inputOptions}{List. Set of input values to determin run type}
+\item{inputOptions}{List. Set of input values to determine run type}
 
 \item{pathToTPL}{String. Path to location of Hydra executable}
 
@@ -51,7 +51,7 @@ folder, located in the project root}
 \item{nAttempts}{Total Number of simulated parameter sets}
 }
 \description{
-Simulates parameters, runs hydra, then determins if simulated parameter set is viable. Essentially filtering out poor simulations
+Simulates parameters, runs hydra, then determines if simulated parameter set is viable. Essentially filtering out poor simulations
 Viable sets are saved as rds files in a predetermined folder
 }
 \section{Run length}{
@@ -59,6 +59,6 @@ Viable sets are saved as rds files in a predetermined folder
 
 Hydra is currently set up to run for 53 years (1964-2016). This is the historic period in which fishing data is available. To extend the run length to \code{nYrs}
 is adding a period of no fishing of length \code{nYrs}-53 years to the start of the model run. It is assumed that all populations have reached
-an equilibrium. This equilibrium is then used as the starting point for the histric portion of the model run.
+an equilibrium. This equilibrium is then used as the starting point for the historic portion of the model run.
 }
 
