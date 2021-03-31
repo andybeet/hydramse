@@ -110,16 +110,16 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     # biomass after nYrsNofishing years - should reach equilibria - > lowest SSB seen
     # use mean of last 10 years
     rule1 <- hydramse::rule1_biomass(biomass,nYrsFishing,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule1$pass == F) { log_print("Persistence");log_print(rule1); next} # these parameter values are garbage. Simulate next set
+    if(rule1$pass == F) { logr::log_print("Persistence");logr::log_print(rule1); next} # these parameter values are garbage. Simulate next set
     ##################################  Fishing Biomass Rule ########################
     # biomass after fishing years should fall between .5 * lowest survey and 2 * highest survey
     # use mean of last 10 years
     rule2 <- hydramse::rule2_biomass(biomass,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule2$pass == F) { log_print("Biomass Reasonability");log_print(rule2); next}
+    if(rule2$pass == F) { logr::log_print("Biomass Reasonability");logr::log_print(rule2); next}
     ################################## Catch Rule ########################
     # catch falls between .5 and 2 * catch
     rule3 <- hydramse::rule3_landings(catch,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule3$pass == F) { log_print("Catch Reasonability");log_print(rule3);next}
+    if(rule3$pass == F) { logr::log_print("Catch Reasonability");logr::log_print(rule3);next}
 
     is <- is+1
     darwinSet <- list(hydraD=hydraD, inputOptions=inputOptions, simulationRules=simulationRules)
