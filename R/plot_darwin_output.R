@@ -10,7 +10,7 @@
 #'
 #'@export
 
-plot_darwin_output <- function(data,yVar,nYrsFishing,simulationRules) {
+plot_darwin_output <- function(data,yVar,nYrsFishing,simulationRules,thresholds) {
 
   nSpecies <- length(unique(data$Species))
   nYrs <- dim(data)[1]/nSpecies
@@ -18,10 +18,13 @@ plot_darwin_output <- function(data,yVar,nYrsFishing,simulationRules) {
   dataType <- tail(names(data),1)
 
   #plot biomass
-
   p <- ggplot2::ggplot(data) +
     ggplot2::geom_line(mapping = ggplot2::aes_(x=as.name("Year"),y=as.name(yVar)),na.rm=T) +
-    ggplot2::facet_wrap(~Species,nrow=4,ncol=3,scales="free_y")
+    #ggplot2::geom_line(aes(y=lq/1E3),linetype="dotted") +
+    #ggplot2::geom_line(aes(y=uq/1E3),linetype="dotted") +
+    ggplot2::facet_wrap(~Species,nrow=4,ncol=3,scales="free_y") +
+    ggplot2::geom_hline(data=thresholds, ggplot2::aes(yintercept=upper)) +
+    ggplot2::geom_hline(data=thresholds, ggplot2::aes(yintercept=lower))
 
   print(p)
   # for (ispecies in 1:nSpecies) {
