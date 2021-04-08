@@ -95,6 +95,10 @@ rule2_biomass <- function(biomass,historicBounds,simulationRules,speciesList) {
   threshold2upper <- threshold2upper[order(names(threshold2upper))]
 
 
+  thresholddf <- data.frame(Species = names(threshold2upper),
+                            lower = threshold2lower,
+                            upper = threshold2upper)
+
   # evaluates the rule
   rule2upper <- (fishingBiomass$mean < threshold2upper)
   rule2lower <-  (fishingBiomass$mean > threshold2lower)
@@ -106,7 +110,10 @@ rule2_biomass <- function(biomass,historicBounds,simulationRules,speciesList) {
     pass <- T
   }
 
-  return(rule2 <- list(pass = pass,lowerBoolean = rule2lower,upperBoolean = rule2upper))
+  return(rule2 <- list(pass = pass,
+                       lowerBoolean = rule2lower,
+                       upperBoolean = rule2upper,
+                       thresholds=thresholddf))
 
 }
 
@@ -149,6 +156,11 @@ rule3_landings <- function(catch,historicBounds,simulationRules,speciesList) {
   names(threshold3upper) <- speciesList
   threshold3upper <- threshold3upper[order(names(threshold3upper))]
 
+  thresholddf <- data.frame(Species = names(threshold3upper) ,
+                            lower = threshold3lower,
+                            upper = threshold3upper)
+
+
   #evaluate the rules
   rule3upper <- (fishingCatch$mean < threshold3upper)
   rule3lower <-  (fishingCatch$mean > threshold3lower)
@@ -159,6 +171,9 @@ rule3_landings <- function(catch,historicBounds,simulationRules,speciesList) {
     pass <- T
   }
 
-  return(rule3 <- list(pass = pass,lowerBoolean = rule3lower,upperBoolean = rule3upper))
+  return(rule3 <- list(pass = pass,
+                       lowerBoolean = rule3lower,
+                       upperBoolean = rule3upper,
+                       thresholds=thresholddf))
 
 }
