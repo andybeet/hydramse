@@ -32,7 +32,13 @@
 darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,SRFunctionChoice,stochasticity=F,inputOptions,pathToTPL,hydraVersion,boolPlot=F){
 
   # create a log file for rule failures
-  logPath <- logr::log_open(paste0(inputOptions$outDir,"test.log"))
+  logFile <- paste0(inputOptions$outDir,"/test.log")
+  if (file.exists(logFile)) {
+    file.remove(logFile)
+  }
+
+  logPath <- logr::log_open(logFile)
+  message(paste0("logPath = ",logPath))
 
   # create folders for storing temporary files and saved output
   nYrsFishing <- hydradata::hydraDataList$Nyrs
@@ -50,8 +56,8 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
   is <- 0
   print("Running Darwinian process ...")
   message(paste0("Creating dat and pin files in: ",outDirForDatPin))
-  #while(ic <= nSims) {
-  while(1) {
+  while(ic < nSims) {
+  #while(1) {
     # check for existing hydra output files then removes
     f <- list.files(outDirForDatPin,".text$")
     if (!identical(f,character(0))) {file.remove(paste0(outDirForDatPin,"/",f))}
@@ -97,6 +103,7 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     # Check to see if set of parameters are good
     # read in output from model and summarize it
     output <- hydramse::process_darwin_output(outDirForDatPin,speciesList=hydraD$speciesList)
+
     #return(output)
     biomass <- output$biomass
     catch <- output$catch
@@ -110,16 +117,42 @@ darwin <- function(seed=NULL,nYrs,hydraD,stockRecruitData,simulationRules,nSims,
     # biomass after nYrsNofishing years - should reach equilibria - > lowest SSB seen
     # use mean of last 10 years
     rule1 <- hydramse::rule1_biomass(biomass,nYrsFishing,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule1$pass == F) { logr::log_print("Persistence");logr::log_print(rule1); next} # these parameter values are garbage. Simulate next set
+    if(rule1$pass == F) {
+      logr::log_print("Persistence")
+      logr::log_print(rule1,console=F)
+      next
+    } # these parameter values are garbage. Simulate next set
     ##################################  Fishing Biomass Rule ########################
     # biomass after fishing years should fall between .5 * lowest survey and 2 * highest survey
     # use mean of last 10 years
     rule2 <- hydramse::rule2_biomass(biomass,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule2$pass == F) { logr::log_print("Biomass Reasonability");logr::log_print(rule2); next}
+    if(rule2$pass == F) {
+      speciesNames <- names(rule2$lowerBoolean)
+      if (any(!rule2$lowerBoolean)) {
+        logr::log_print(paste0("Biomass Reasonability Failed (lower) = ",paste0(speciesNames[which(!rule2$lowerBoolean)],collapse=",")))
+      }
+      if (any(!rule2$upperBoolean)) {
+        logr::log_print(paste0("Biomass Reasonability Failed (upper) = ",paste0(speciesNames[!which(!rule2$upperBoolean)],collapse=",")))
+      }
+      hydramse::plot_darwin_output(biomass,"Biomass",nYrsFishing,simulationRules,rule2$thresholds)
+      #logr::log_print(rule2,console=F)
+      next
+    }
     ################################## Catch Rule ########################
     # catch falls between .5 and 2 * catch
     rule3 <- hydramse::rule3_landings(catch,stockRecruitData$historicBounds,simulationRules,hydraD$speciesList)
-    if(rule3$pass == F) { logr::log_print("Catch Reasonability");logr::log_print(rule3);next}
+    if(rule3$pass == F) {
+      speciesNames <- names(rule3$lowerBoolean)
+      if (any(!rule3$lowerBoolean)) {
+        logr::log_print(paste0("Catch Reasonability Failed (lower) = ",paste0(speciesNames[which(!rule3$lowerBoolean)],collapse=",")))
+      }
+      if (any(!rule3$upperBoolean)) {
+        logr::log_print(paste0("Catch Reasonability Failed (upper) = ",paste0(speciesNames[!which(!rule3$upperBoolean)],collapse=",")))
+      }
+      hydramse::plot_darwin_output(catch,"Catch",nYrsFishing,simulationRules,rule3$thresholds)
+      #logr::log_print(rule3,console=F)
+      next
+    }
 
     is <- is+1
     darwinSet <- list(hydraD=hydraD, inputOptions=inputOptions, simulationRules=simulationRules)
